@@ -1,0 +1,252 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" lightningStylesheets="true" docType="html-5.0" controller="CreateDocumentController">
+<html xmlns:v-model="https://cn.vuejs.org" xmlns:v-on="https://cn.vuejs.org" xmlns:v-bind="https://cn.vuejs.org" xmlns:v-for="https://cn.vuejs.org" xmlns:v-slot="https://cn.vuejs.org" xmlns:xlink="http://www.w3.org/2000/svg">
+<head>
+    <!-- 生产环境版本，优化了尺寸和速度 -->
+    <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.all.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.all.css')}" />
+    <!-- 原材质库 -->
+    <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/material-icons.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/vue.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.js')}" />
+    <style>
+        .main {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            padding-top: 20px;
+            position: absolute;
+            overflow: hidden;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="app" class="main">
+        <input type="file" accept="image/*, .pdf, .doc, .docx, .docm, .zip, .rar" v-model="gamaAccount.JJ_CN_Related_File__c" v-on:change="fileChange" />
+        <button v-on:click="uploadFile('')">Upload File</button>
+    </div>
+</body>
+<script>
+    var app = new Vue({
+        el:'#app',
+        data:{
+            gamaAccount: {
+            	JJ_CN_Related_File__c: '',
+            	fileName: '',
+            },
+            file: {},
+            chunkSize: 2500000,
+            positionIndex: 0,
+            fileObjBody: '',
+            doneUploading: false,
+        },
+
+        methods: {
+        	checkNull: function(item) {
+                if(item == undefined || item == null || (typeof item == 'string' && item.trim() == '')) {
+                    return true;
+                } else {
+                    return false;
+                } 
+            },
+            /**
+            * 上传文件改变事件
+            * @param 
+            * @return 
+            * @authr czf
+            * @date 2022-04-19
+            */
+			fileChange: function(event) {
+				console.log('fileChange');
+				console.log("event.target.files[0]");
+				console.log(event.target.files[0]);
+				let myflie = event.target.files[0];
+				if(!this.checkNull(myflie)) {
+					let isLtSize = myflie.size / 1024 /1024 <= 5;
+    				if(!isLtSize) {
+    					this.gamaAccount.JJ_CN_Related_File__c = '';
+    					console.log('上传文件大小不超过5M！');
+    				} else {
+    					this.file = myflie;	
+    					this.gamaAccount.fileName = null;
+	    			}
+				} else {
+					this.file = {};
+				}
+			},
+
+			uploadFile: async function(versionId) {
+				console.log('uploadFile');
+                let filestr = '';
+				if(this.file.name != undefined){
+					let fileObj = {
+    					type:this.file.type,
+    					name:this.file.name,
+    				}
+
+    				console.log("fileObj1");
+                    console.log(fileObj);
+                    await this.readerOnload(fileObj);
+                    console.log("fileObj2");
+                    console.log(fileObj);
+                    console.log(fileObj.bodybase64);
+                    if(fileObj.bodybase64.length <= this.positionIndex + this.chunkSize) {
+				        fileObj.bodybase64 = fileObj.bodybase64.substring(this.positionIndex);
+				        this.doneUploading = false;
+				    } else {
+				        fileObj.bodybase64 = fileObj.bodybase64.substring(this.positionIndex, this.positionIndex + this.chunkSize);
+				        this.doneUploading = true;
+				        console.log("fileObj3")
+				        console.log(fileObj);
+				    }
+
+                    filestr = JSON.stringify(fileObj);
+                    console.log("filestr");
+                    console.log(filestr);
+
+				}
+
+				console.log('uploadFile2');
+				remoteAction('CreateDocumentController.uploadFileAction',
+                    filestr, versionId
+                ).then(data => {
+                	console.log('data');
+                    console.log(data);
+                    console.log(data.status);
+                    console.log(data.Id);
+
+                    if(this.doneUploading) {
+                    	this.uploadFile(data.Id);
+                    	this.positionIndex += this.chunkSize;
+                    }
+                }).catch((error) => {
+
+                }).finally(() => {
+                    console.log("finally")
+                });
+
+			},
+
+			/**
+            * 读取文件操作
+            * @param fileObj 文件
+            * @return 
+            * @authr czf
+            * @date 2022-04-19
+            */
+            readerOnload : function(fileObj){
+            	console.log('readerOnload');
+				return new Promise((resolve) => {
+					var reader = new FileReader();
+                    reader.readAsDataURL(this.file);
+                    reader.onload = function(e) {  
+                    	fileObj.bodybase64 = reader.result.split('base64,')[1];
+                    	console.log("fileObj.bodybase64");
+                    	console.log(fileObj.bodybase64.length);
+                    	this.fileObjBody = reader.result.split('base64,')[1];;
+                    	resolve(fileObj);
+                    }
+			    });
+			},
+
+        },
+
+        mounted: function () {
+            
+      	},
+
+    });
+
+    /**
+     * 执行远程方法 最多5个参数
+     * @param methodName:后台方法名，params:调用后台方法所需的参数
+     * @return 
+     * @authr czf
+     */
+    function remoteAction(methodName, ...params) {
+        if (params != null && params != undefined && params.length > 0) {
+            if (params.length == 1) {
+                return new Promise((resove, reject) => {
+                    Visualforce.remoting.Manager.invokeAction(methodName, params[0], (data, event) => {
+                        if (event.status) {
+                            resove(data);
+                        } else if (event.type === 'exception') {
+                            reject(event.message);
+                        } else {
+                            reject(event.message);
+                        }
+                    }, { escape: false });
+                });
+            } else if (params.length == 2) {
+                return new Promise((resove, reject) => {
+                    Visualforce.remoting.Manager.invokeAction(methodName, params[0], params[1], (data, event) => {
+                        if (event.status) {
+                            resove(data);
+                        } else if (event.type === 'exception') {
+                            reject(event.message);
+                        } else {
+                            reject(event.message);
+                        }
+                    }, { escape: false });
+                });
+            } else if (params.length == 3) {
+                return new Promise((resove, reject) => {
+                    Visualforce.remoting.Manager.invokeAction(methodName, params[0], params[1], params[2], (data, event) => {
+                        if (event.status) {
+                            resove(data);
+                        } else if (event.type === 'exception') {
+                            reject(event.message);
+                        } else {
+                            reject(event.message);
+                        }
+                    }, { escape: false });
+                });
+            } else if (params.length == 4) {
+                return new Promise((resove, reject) => {
+                    Visualforce.remoting.Manager.invokeAction(methodName, params[0], params[1], params[2], params[3], (data, event) => {
+                        if (event.status) {
+                            resove(data);
+                        } else if (event.type === 'exception') {
+                            reject(event.message);
+                        } else {
+                            reject(event.message);
+                        }
+                    }, { escape: false });
+                });
+            } else if (params.length == 5) {
+                return new Promise((resove, reject) => {
+                    Visualforce.remoting.Manager.invokeAction(methodName, params[0], params[1], params[2], params[3], params[4], (data, event) => {
+                        if (event.status) {
+                            resove(data);
+                        } else if (event.type === 'exception') {
+                            reject(event.message);
+                        } else {
+                            reject(event.message);
+                        }
+                    }, { escape: false });
+                });
+            } else {
+                return new Promise((resove, reject) => {
+                    reject('参数过多不支持此方法!');
+                });
+            }
+        } else {
+            return new Promise((resove, reject) => {
+                Visualforce.remoting.Manager.invokeAction(methodName, ...params, (data, event) => {
+                    if (event.status) {
+                        resove(data);
+                    } else if (event.type === 'exception') {
+                        reject(event.message);
+                    } else {
+                        reject(event.message);
+                    }
+                }, { escape: false });
+            });
+        }
+    }
+</script>
+</html>
+</apex:page>

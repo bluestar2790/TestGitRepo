@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CT</fullName>
+    <columns>NAME</columns>
+    <columns>InterfaceName__c</columns>
+    <columns>Type__c</columns>
+    <columns>Results__c</columns>
+    <columns>GeneratedTime__c</columns>
+    <columns>SendContent__c</columns>
+    <columns>ReturnsContent__c</columns>
+    <columns>CREATEDBY_USER.ALIAS</columns>
+    <columns>IP__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Type__c</field>
+        <operation>equals</operation>
+        <value>入站</value>
+    </filters>
+    <filters>
+        <field>GeneratedTime__c</field>
+        <operation>equals</operation>
+        <value>TODAY</value>
+    </filters>
+    <label>今天的入站</label>
+</ListView>

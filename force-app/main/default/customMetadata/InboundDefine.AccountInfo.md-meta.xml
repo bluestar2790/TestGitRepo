@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>(U8)客户信息同步接口</label>
+    <protected>false</protected>
+    <values>
+        <field>DataListName__c</field>
+        <value xsi:type="xsd:string">DATA</value>
+    </values>
+    <values>
+        <field>EncodeKey__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>EncodeType__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ExecuteClass__c</field>
+        <value xsi:type="xsd:string">IntfInboundAccounts</value>
+    </values>
+    <values>
+        <field>ExecuteInterval__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ExternalSystemName__c</field>
+        <value xsi:type="xsd:string">ZeissU8</value>
+    </values>
+    <values>
+        <field>InterfaceName__c</field>
+        <value xsi:type="xsd:string">AccountInfo</value>
+    </values>
+    <values>
+        <field>IntfFieldMapping__c</field>
+        <value xsi:type="xsd:string">U8_ACCOUNT</value>
+    </values>
+    <values>
+        <field>IntfVerificationUrl__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsAutoBuildObject__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>IsNeedCheckMd5__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Key__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>LogExpiryDate__c</field>
+        <value xsi:type="xsd:double">7.0</value>
+    </values>
+    <values>
+        <field>LogExpiryDays__c</field>
+        <value xsi:type="xsd:double">7.0</value>
+    </values>
+    <values>
+        <field>MapConfigName__c</field>
+        <value xsi:type="xsd:string">Account</value>
+    </values>
+    <values>
+        <field>MapConfigObjectName__c</field>
+        <value xsi:type="xsd:string">U8_Account</value>
+    </values>
+    <values>
+        <field>NeedEncode__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>NeedRetry__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>NoNeedBuildObject__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>NoNeedLogin__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>OutboundIntfName__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>TestFailResponse__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>TestResponse__c</field>
+        <value xsi:nil="true"/>
+    </values>
+</CustomMetadata>

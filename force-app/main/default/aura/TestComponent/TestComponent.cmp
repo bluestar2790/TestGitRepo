@@ -1,0 +1,265 @@
+<aura:component implements="force:appHostable,force:hasRecordId,lightning:actionOverride,lightning:hasPageReference,flexipage:availableForAllPageTypes,force:lightningQuickAction,flexipage:availableForRecordHome" controller="TestController">
+    <aura:attribute name="test" type="String" default="testValue" />
+    {!v.test}
+    <br />
+    <ui:inputText label="请输入" value="{!v.test}" updateOn="keyup" class="mystyle" />
+    <lightning:input type="Text" name="input1" label="Enter a date" onchange="{!c.myAction}" />
+    <lightning:button label="调用" onclick="{!c.myAction}" />
+
+    <lightning:button label="获取编号" onclick="{!c.codeAction}" />
+    <br />
+
+
+
+
+
+    <!-- Imports -->
+<!--     <aura:import library="lightningcomponentdemo:mockdataFaker" property="mockdataLibrary"/>
+
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+
+    <div style="height: 300px">
+        <lightning:datatable
+                keyField="id"
+                data="{! v.data }"
+                columns="{! v.columns }"
+                hideCheckboxColumn="true"/>
+    </div> -->
+
+
+<!--     <div class="backgroundInverse">
+        <lightning:buttonGroup>
+            <lightning:button variant="inverse" label="Refresh" />
+            <lightning:button variant="inverse" label="Edit" />
+            <lightning:button variant="inverse" label="Save" />
+        </lightning:buttonGroup>
+    </div>
+
+    <aura:attribute name="liked" default="false" type="Boolean" />
+    <aura:attribute name="answered" default="false" type="Boolean" />
+
+    <div class="slds-m-around_medium">
+        <lightning:buttonIconStateful iconName="utility:like" selected="{! v.liked }" onclick="{! c.handleLikeButtonClick }" alternativeText="Like" />
+    </div>
+    <div class="slds-m-around_medium">
+        <lightning:buttonIconStateful iconName="utility:answer" selected="{! v.answered }" onclick="{! c.handleAnswerButtonClick }" alternativeText="Answer" size="small"/>
+    </div>
+
+    <div class="slds-m-around_medium">
+        <lightning:buttonIconStateful iconName="utility:like"  alternativeText="Disabled" disabled="true"/>
+    </div> -->
+
+<!-- <div class="slds-m-vertical_medium">
+        <h1 class="slds-text-heading_small">Formatted Address with Link</h1>
+        <p class="slds-text-body_regular">This component formats an address and automatically links it to Google Maps.</p>
+    </div>
+    <lightning:formattedAddress
+        street="121 Spear St."
+        city="San Francisco"
+        country="US"
+        province="CA"
+        postalCode="94105"
+    />
+     <div class="slds-m-vertical_medium">
+        <h1 class="slds-text-heading_small">Formatted Address in Plain Text</h1>
+        <p class="slds-text-body_regular">This component formats an address but doesn't link to Google Maps.</p>
+    </div>
+    <lightning:formattedAddress
+        street="121 Spear St."
+        city="San Francisco"
+        country="US"
+        province="CA"
+        postalCode="94105"
+        disabled="true"
+    /> -->
+
+
+<!--     <aura:attribute name="name" type="String" default="Your Name"/>
+    <aura:attribute name="myTitleName" type="Aura.Component[]">
+        <div>Hello {! v.name }</div>
+    </aura:attribute>
+    <lightning:card footer="Card Footer">
+        <aura:set attribute="title">
+            {!v.myTitleName}
+        </aura:set>
+    </lightning:card>
+ -->
+
+<!--     <aura:attribute name="myTitle" type="String" default="My Card Title"/>
+    <lightning:card title="{!v.myTitle}" footer="Card Footer">
+        <aura:set attribute="actions">
+            <lightning:button label="New"/>
+        </aura:set>
+        <p class="slds-p-horizontal_small">
+            Card Body (custom component)
+        </p>
+    </lightning:card> -->
+
+
+    <!-- <lightning:card variant="Narrow" title="Narrow Card Header" iconName="standard:account" footer="Card Footer">
+        <aura:set attribute="actions">
+            <lightning:buttonIcon iconName="utility:down" variant="border-filled" alternativeText="Show More"/>
+        </aura:set>
+        <p class="slds-p-horizontal_small">
+            Card Body (custom component)
+        </p>
+    </lightning:card> -->
+
+
+<!--     <lightning:card footer="Card Footer" title="Hello">
+        <aura:set attribute="actions">
+            <lightning:button label="New"/>
+        </aura:set>
+        <p class="slds-p-horizontal_small">
+            Card Body (custom component)
+        </p>
+    </lightning:card>
+ -->
+
+<!-- 
+    <lightning:recordEditForm recordId="a0A5g000000DBBxEAO" objectApiName="Product__c">
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-2">
+                <lightning:outputField fieldName="ProductNo__c" />
+                <lightning:inputField fieldName="ProductPrice__c" />
+                <lightning:inputField fieldName="ProductCategoriesFirst__c" />
+                <lightning:inputField fieldName="ProductInventory__c" />
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning:outputField fieldName="Name" />
+                <lightning:inputField fieldName="ProductUnit__c" />
+                <lightning:inputField fieldName="ProductCategoriesSecond__c" />
+                <lightning:inputField fieldName="ProductDescription__c" />
+            </div>
+        </div>
+    </lightning:recordEditForm> -->
+
+<!--     <aura:attribute name="filetype" type="List" default="['.png', '.jpg', '.jpeg']" />
+    <aura:attribute name="multiple" type="Boolean" default="true" />
+    <aura:attribute name="disabled" type="Boolean" default="true" />
+    <aura:attribute name="recordId" type="String" />
+    <lightning:fileUpload label="Attach receipt"
+        name="fileUploader"
+        multiple="true"
+        accept="{!v.filetype}"
+        recordId="{!v.recordId}"
+        onuploadfinished="{!c.handleUploadFinished}" /> -->
+
+<!-- <aura:attribute name="width" type="String" description=" width of parent region"/>
+    <lightning:flexipageRegionInfo width="{!v.width}"/>
+        <div id="MyCustomComponent" class="{! v.width}"> -->
+            <!-- Your component here -->
+        <!-- </div> -->
+
+
+<!--     <aura:attribute name="variant" type="String" default="non-linear"/>
+    <aura:attribute name="hideUpdateButton" type="Boolean" default="false"/>
+    <lightning:path aura:id="path" recordId="{!v.recordId}"
+        variant="{!v.variant}"
+        hideUpdateButton="{!v.hideUpdateButton}"
+        onselect="{!c.handleSelect}" />
+
+
+    <lightning:picklistPath aura:id="picklistPath" recordId="{!v.recordId}"
+        variant="non-linear"
+        picklistFieldApiName="LeadSource"
+        onselect="{!c.handleSelect}">
+    </lightning:picklistPath> -->
+
+
+    <lightning:progressIndicator currentStep="4" type="base" hasError="true" variant="base">
+        <lightning:progressStep label="Step 1" value="1"/>
+        <lightning:progressStep label="Step 2" value="2"/>
+        <lightning:progressStep label="Step 3" value="3"/>
+        <lightning:progressStep label="Step 4" value="4"/>
+    </lightning:progressIndicator>
+
+
+
+
+
+<!--     <lightning:recordEditForm aura:id="recordEditForm"
+                           objectApiName="Borrow__c">
+        <lightning:messages />
+        <lightning:inputField fieldName="Name" />
+        <lightning:inputField aura:id="nameField" fieldName="readerId__c" />
+        <lightning:inputField fieldName="readerName__c" value="My Field Value" />
+        <lightning:inputField fieldName="borrowchildBookId__c" />
+        <lightning:inputField fieldName="bookName__c" />
+        <lightning:button class="slds-m-top_small" type="submit" label="Create new" />
+        <lightning:button class="slds-m-top_small" type="button" label="Create" onclick="{!c.handleCreateLoad}" />
+    </lightning:recordEditForm> -->
+
+<!--     <lightning:recordEditForm objectApiName="Account">
+        <lightning:messages />
+        <lightning:inputField fieldName="Name" value="My Field Value"/>
+        <lightning:button class="slds-m-top_small" type="submit" label="Create new" />
+    </lightning:recordEditForm> -->
+<!--     <lightning:recordEditForm aura:id="recordEditForm"
+                           objectApiName="Product__c">
+        <lightning:messages />
+        <lightning:inputField fieldName="Name" />
+        <lightning:button class="slds-m-top_small" type="submit" label="Create new" />
+    </lightning:recordEditForm>
+ -->
+
+  <!--   <lightning:recordEditForm objectApiName="Account" recordId="{!v.recordId}">
+        <lightning:messages />
+        <lightning:inputField fieldName="Name" value="My Field Value"/>
+        <lightning:button class="slds-m-top_small" type="submit" label="Update name" />
+    </lightning:recordEditForm> -->
+
+<!--     <lightning:recordEditForm objectApiName="Account" onload="{!c.handleCreateLoad}">
+    <lightning:messages />
+    <lightning:inputField aura:id="nameField" fieldName="Name" value="My Field Value" />
+    <lightning:button class="slds-m-top_small" type="submit" label="Create new" />
+    <lightning:button class="slds-m-top_small" type="button" label="Create" onclick="{!c.handleCreateLoad}" />
+    </lightning:recordEditForm> -->
+
+<!--     <lightning:recordEditForm recordId="a0A5g000000DBBxEAO" objectApiName="Product__c">
+        <lightning:messages />
+        <lightning:outputField fieldName="Name" />
+        <lightning:inputField fieldName="ProductPrice__c" />
+        <lightning:inputField fieldName="ProductCategoriesFirst__c" />
+        <lightning:inputField fieldName="ProductInventory__c" />
+        <lightning:button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update" />
+    </lightning:recordEditForm> -->
+
+
+    <!-- <lightning:button onclick="{! c.handleShowActiveSectionName }" label="Show Active Section Name"/>
+    <lightning:button onclick="{! c.handleSetActiveSectionC }" label="Open Section C"/>
+    <lightning:accordion aura:id="accordion" activeSectionName="B">
+        <lightning:accordionSection name="A" label="Accordion Title A">
+            <aura:set attribute="actions">
+                <lightning:buttonMenu aura:id="menu" alternativeText="Show menu" iconSize="x-small" menuAlignment="right">
+                    <lightning:menuItem value="New" label="Menu Item One" />
+                    <lightning:menuItem value="Edit" label="Menu Item Two" />
+                </lightning:buttonMenu>
+            </aura:set>
+            <aura:set attribute="body">
+                <p>This is the content area for section A.</p>
+                <p>.</p>
+                <p>.</p>
+                <p>.</p>
+                <p>The section height expands to fit your content.</p>
+            </aura:set>
+        </lightning:accordionSection>
+        <lightning:accordionSection name="B" label="Accordion Title B">
+                <p>This is the content area for section B.</p>
+                <p>.</p>
+                <p>.</p>
+                <p>.</p>
+                <p>The section height expands to fit your content.</p>
+        </lightning:accordionSection>
+        <lightning:accordionSection name="C" label="Accordion Title C">
+                <p>This is the content area for section C.</p>
+                <p>.</p>
+                <p>.</p>
+                <p>.</p>
+                <p>The section height expands to fit your content.</p>
+        </lightning:accordionSection>
+    </lightning:accordion> -->
+</aura:component>

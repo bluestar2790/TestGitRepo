@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <iframe id="iframe1" name="iframeName"></iframe>
+    <button onclick="showLoc();">Show location properties</button>
+    <button onclick="sendData('Some data');">Send data</button>
+</body>
+
+<script>
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+
+    // Set display size (css pixels).
+    var size = 200;
+    canvas.style.width = size + "px";
+    canvas.style.height = size + "px";
+
+    // Set actual size in memory (scaled to account for extra pixel density).
+    var scale = window.devicePixelRatio; // Change to 1 on retina screens to see blurry canvas.
+    canvas.width = Math.floor(size * scale);
+    canvas.height = Math.floor(size * scale);
+
+    // Normalize coordinate system to use css pixels.
+    ctx.scale(scale, scale);
+
+    ctx.fillStyle = "#bada55";
+    ctx.fillRect(10, 10, 300, 300);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = '18px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    var x = 100;
+    var y = 100;
+
+    var textString = "M";
+    ctx.fillText(textString, x, y);
+
+    function showLoc() {
+        var oLocation = window.location, aLog = ["Property (Typeof): Value", "window.location (" + (typeof oLocation) + "): " + oLocation ];
+        for (var sProp in oLocation){
+          aLog.push(sProp + " (" + (typeof oLocation[sProp]) + "): " +  (oLocation[sProp] || "n/a"));
+        }
+        alert(aLog.join("\n"));
+      }
+      
+
+      function sendData (sData) {
+        window.location.search = sData;
+      }
+      
+      // in html: <button onclick="sendData('Some data');">Send data</button>
+      
+      
+</script>
+</html>

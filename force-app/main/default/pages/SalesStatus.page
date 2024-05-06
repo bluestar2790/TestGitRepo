@@ -1,0 +1,527 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" lightningStylesheets="true" docType="html-5.0">
+<html xmlns:v-model="https://cn.vuejs.org" xmlns:v-on="https://cn.vuejs.org" xmlns:v-bind="https://cn.vuejs.org" xmlns:v-for="https://cn.vuejs.org" xmlns:v-slot="https://cn.vuejs.org" xmlns:xlink="http://www.w3.org/2000/svg">
+<apex:slds />
+    <head>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <!-- 生产环境版本，优化了尺寸和速度 -->
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.all.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.all.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/main.css')}" />
+        <!-- 原材质库 -->
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/material-icons.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/vue.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Echarts, 'Echarts/echarts.min.js')}" />
+        
+        <style type="text/css">
+            .my-main-layout {
+                top: 0;
+                left: 0;
+            }
+
+            .mu-select {
+                border: 1px solid #d9d9d9;
+                background : #ffffff;
+                border-radius: .25rem;
+            }
+
+            .mu-input {
+                font-size: 10px;
+                width: 200px;
+                font-size: 12px !important;
+                min-height: 20px !important;
+                margin-bottom: 0px !important;
+            }
+
+            .mu-select .mu-select-content{
+                padding-left: 10px;
+            }
+
+            .mu-table-body .custom_td {
+                font-size: .75rem;
+                text-align: center;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 3px;
+                margin: auto;
+            }
+
+            .rtaskDialog {
+                height: 60% !important;
+                border-radius: 1rem;
+            }
+
+            .doalogClose{
+                margin-left: 99%;
+                margin-top: -1%;
+                background: #bfbfbf;
+            }
+
+            .mu-dialog-body {
+                height: 100% !important;
+                padding: 0;
+            }
+
+
+        </style>
+    </head>
+    <body>
+        <div id="app" class="slds-scope">
+            <div class="my-main-layout">
+                <div class="my-main-navigation" style="min-width: 400px;">
+                    <img class="my-icon" src="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/icon-right.svg')}" />
+                    <p>上海交通大学医学院附属瑞金医院--HEMA_LL</p>
+                </div>
+                <div class="my-main-title" style="border-bottom: 2px solid #0096db33;">
+                    <img src="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/searchData.svg')}" />
+                    <p style="font-weight: bold; font-size: 1.0rem;">销售业绩趋势</p>
+                </div>
+                <div style="padding: 15px;" >
+                    <div style="line-height: 48px">
+                        <div style="margin-right: 15px; font-size: 1rem; display: inline-block;">
+                            <p>领域</p>
+                        </div>
+                        <div style="display: inline-block;">
+                            <mu-select>
+                                <mu-option label="血液病(淋巴瘤)">血液病(淋巴瘤)</mu-option>
+                            </mu-select>
+                        </div>
+                    </div>
+                    <div style="line-height: 30px; padding: 5px 0px">
+                        <div style="margin-right: 15px; font-size: 1rem; display: inline-block;">
+                            <p>产品</p>
+                        </div>
+                        <div style="border: 1px solid #4793e8; width: 100px; text-align: center; line-height: 26px; border-radius: 1.2rem 1.2rem; color: #4793e8; display: inline-block;">
+                            <p>亿珂</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px; line-height: 26px; width: 100%;">
+                        <div style="margin-right: 15px; font-size: 0.8rem; display: inline-block;">
+                            <p>院边店</p>
+                        </div>
+                        <div style="display: inline-block; font-size: 0.8rem;">
+                            <p>无院边店销量信息</p>
+                        </div>
+                        <div style="float: right; display: flex; flex-direction: row-reverse; padding-right: 10px">
+                            <div style="display: inline-block; font-size: 1rem; width: 120px; text-align: center; background-color: #2a82e4; border-radius: 0.5rem 0.5rem; color: white; right: 5px;" v-on:click="openRtaskDialog('销售预测')">
+                                <p>填写销售预测</p>
+                            </div>
+                            <div style="display: inline-block; font-size: 1rem; width: 120px; text-align: center; background-color: #2a82e4; border-radius: 0.5rem 0.5rem; color: white; right: 5px; margin-right: 10px">
+                                <p>填写库存</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="height: 26px; width: 100%; font-size: 0.8rem;">
+                        <div style="float: right; display: flex; flex-direction: row-reverse; padding-right: 10px">
+                            <div style="display: inline-block; width: 120px; text-align: center;">
+                                <p>2021-07-01</p>
+                            </div>
+                            <div style="display: inline-block; width: 120px; text-align: center; margin-right: 10px">
+                                <p>2021-06-01</p>
+                            </div>
+                            <div style="display: inline-block; width: 120px; text-align: right;">
+                                <p>最后更新时间: </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Datatable s-->
+                    <div>
+                        <mu-container>
+                            <mu-paper v-bind:z-depth="1">
+                                <mu-data-table v-bind:stripe="true" v-bind:columns="salesInfoYtd.colums" v-bind:data="salesInfoYtd.data">
+                                    <template slot="header" slot-scope="scope">
+                                        <tr style="background: rgb(241, 250, 255);">
+                                            <th style="font-weight: bold;" class="is-center">
+                                                <div style="display: flex;justify-content: center;">
+                                                    PY Sales
+                                                    <mu-tooltip placement="right-start" style="position: relative;left: 0.2rem;">
+                                                        <template slot="content">
+                                                            <p>
+                                                                此医院去年同期销售额
+                                                            </p>
+                                                        </template>
+                                                        <mu-icon size="16" value="info" color="blue"></mu-icon>
+                                                    </mu-tooltip>
+                                                </div>
+                                            </th>
+                                            <th style="font-weight: bold;" class="is-center">
+                                                <div style="display: flex;justify-content: center;"> YTD Actual
+                                                    <mu-tooltip placement="right-start" style="position: relative;left: 0.2rem;">
+                                                        <template slot="content">
+                                                            <p>
+                                                                此医院YTD销售额
+                                                            </p>
+                                                        </template>
+                                                        <mu-icon size="16" value="info" color="blue"></mu-icon>
+                                                    </mu-tooltip>
+                                                </div>
+                                            </th>
+                                            <th style="font-weight: bold;" class="is-center">
+                                                <div style="display: flex;justify-content: center;">
+                                                    YTD Target
+                                                    <mu-tooltip placement="right-start" style="position: relative;left: 0.2rem;">
+                                                        <template slot="content">
+                                                            <p>
+                                                                此医院YTD销售目标
+                                                            </p>
+                                                        </template>
+                                                        <mu-icon size="16" value="info" color="blue"></mu-icon>
+                                                    </mu-tooltip>
+                                                </div>
+                                            </th>
+                                            <th style="font-weight: bold;" class="is-center">
+                                                <div style="display: flex;justify-content: center;">
+                                                    YTD Net Growth
+                                                    <mu-tooltip placement="right-start" style="position: relative;left: 0.2rem;">
+                                                        <template slot="content">
+                                                            <p>
+                                                                此医院YTD销售额净增长
+                                                            </p>
+                                                        </template>
+                                                        <mu-icon size="16" value="info" color="blue"></mu-icon>
+                                                    </mu-tooltip>
+                                                </div>
+                                            </th>
+                                            <th style="font-weight: bold;" class="is-center">
+                                                <div style="display: flex;justify-content: center;">
+                                                    YTD Ach%
+                                                    <mu-tooltip placement="left-start" style="position: relative;left: 0.2rem;">
+                                                        <template slot="content">
+                                                            <p>
+                                                                此医院YTD目标完成比率
+                                                            </p>
+                                                        </template>
+                                                        <mu-icon size="16" value="info" color="blue"></mu-icon>
+                                                    </mu-tooltip>
+                                                </div>
+                                            </th>
+                                            <th style="font-weight: bold;" class="is-center">
+                                                <div style="display: flex;justify-content: center;">
+                                                    YTD Growth%
+                                                    <mu-tooltip placement="left-start" style="position: relative;left: 0.2rem;">
+                                                        <template slot="content">
+                                                            <p>
+                                                                此医院YTD销售额增长比例
+                                                            </p>
+                                                        </template>
+                                                        <mu-icon size="16" value="info" color="blue"></mu-icon>
+                                                    </mu-tooltip>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </template>
+                                    <template slot-scope="scope">
+                                        <td class="custom_td">{{scope.row.lyAmount}}</td>
+                                        <td class="custom_td">{{scope.row.tyAmount}}</td>
+                                        <td class="custom_td">{{scope.row.tgAmout}}</td>
+                                        <td class="custom_td">{{scope.row.netGrowth}}</td>
+                                        <td class="custom_td">{{scope.row.achRate}}%</td>
+                                        <td class="custom_td">{{scope.row.grRate}}%</td>
+                                    </template>
+                                </mu-data-table>
+                            </mu-paper>
+                        </mu-container>
+                    </div>
+                    <!-- 弹框 s-->
+                    <mu-dialog title="" dialog-class="rtaskDialog" width="75%"  max-width="80%" v-bind:esc-press-close="false" v-bind:overlay-close="false" v-bind:open.sync="dialog" style="height:100%;">
+                        <div style="position: relative;display: flex; height: 0rem;" >
+                            <mu-button small="true" icon="true" v-on:click="cancelHandler()" class="doalogClose">
+                                <mu-icon value="close"></mu-icon>
+                            </mu-button>
+                        </div>
+                        <iframe ref="rtaskIframe" v-bind:src="iframeSrc" style="width:100%;border:none;height:100%;top:0;left:0; border-radius: 1rem"></iframe>
+                    </mu-dialog>
+                    <!-- 弹框 e-->
+                    <!-- Datatable e-->
+                    <!-- Chart s-->
+                    <div class="demo-table-layout" style="margin:0.75rem 0 0;height:20rem;width:100%;border:0;border-right:1px solid #f2f2f2;float: left;" id="productSalesInfoChart">Chart</div>
+                    <div style="display:block;text-align: center;line-height: 2rem;color:black;">
+                        *数据来源：iDiscover医院销售数据 更新至
+                        <div id="productSalesInfoChartText" style="display: inline-block;">2021年06月</div>
+                    </div>
+                    <!-- Chart e-->
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#app',
+            data: {
+                salesInfoYtd: {
+                    columns: [
+                        { title: 'YTD PY Sales', width: '15%', name: 'lyAmount', align: 'center', sortable: false, class: 'custom_th' },
+                        { title: 'YTD Actual', name: 'tyAmount', width: '13%', align: 'center', sortable: false, class: 'custom_th' },
+                        { title: 'YTD Target', name: 'tgAmout', width: '18%', align: 'center', sortable: false, class: 'custom_th' },
+                        { title: 'YTD Net Growth', name: 'netGrowth', width: '18%', align: 'center', sortable: false, class: 'custom_th' },
+                        { title: 'YTD Ach%', name: 'achRate', width: '18%', align: 'center', sortable: false, class: 'custom_th' },
+                        { title: 'YTD Growth%', name: 'grRate', width: '18%', align: 'center', sortable: false, class: 'custom_th' },
+                    ],
+                    data: [
+                        {
+                            lyAmount: 159494729,
+                            tyAmount: 8381950,
+                            tgAmout: 8515421,
+                            netGrowth: -7567779,
+                            achRate: 98,
+                            grRate: -47
+                        }
+                    ],
+                },
+                dialog: false,
+                iframeSrc: '',
+            },
+
+            methods: {
+                //打开弹框
+                openRtaskDialog: function(targetData){
+                    var url = '';
+                    if(targetData == '销售预测'){
+                        url =  '/apex/Sales_Forecast';
+                    } else if (targetData == '产品库存') {
+                        url = '/apex/Sales_Forecast';
+                    }
+
+                    if (url != '') {
+                        this.iframeSrc = url;
+                        this.dialog = true;
+                    }
+                },
+                //取消弹框
+                cancelHandler : function(){
+                    this.iframeSrc = '';
+                    this.dialog = false;
+                },
+
+            },
+
+            mounted: function() {
+                this.$nextTick(function() {
+                    drawProductSalesInfo();
+                });
+            },
+
+        });
+
+        function drawProductSalesInfo() {
+            let tooltips = {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        crossStyle: {
+                            color: '#999'
+                        }
+                    },
+                    formatter: function(params) {
+                        var result = params[0].name;
+                        params.forEach(function(item) {
+                            //if (item.data) {
+                            if (item.seriesName == 'Ach%' || item.seriesName == 'Growth%') {
+                                result += '<br/>' + item.marker + item.seriesName + ' : ' + item.data + '%';
+                            } else {
+                                result += '<br/>' + item.marker + item.seriesName + ' : ' + item.data;
+                            }
+
+                            //}
+                        });
+                        return result;
+                    }
+                };
+
+            let legends = {
+                    bottom: '0%',
+                    data: ['PY Sales', 'Actual', 'Target', 'Net Growth', 'Ach%', 'Growth%', '库存', '预测']
+                };
+
+            let xAxises = [{
+                    type: 'category',
+                    data: ["2020年8月","2020年9月","2020年10月","2020年11月","2020年12月","2021年1月","2021年2月","2021年3月","2021年4月","2021年5月","2021年6月","2021年7月","2021年8月"],
+                    axisPointer: {
+                        type: 'shadow'
+                    },
+                    axisLabel: {
+                        fontSize: 10,
+                        interval: 0
+                    }
+                }];
+
+            let yAxises = [
+                    {
+                        type: 'value',
+                        //interval: 50000,
+                        axisLabel: {
+                            formatter: '{value}'
+                        }
+                    },
+                    {
+                        type: 'value',
+                        // max: 400,
+                        // interval: 100,
+                        axisLabel: {
+                            formatter: '{value} %'
+                        }
+                    }
+                ];
+
+            let option = {
+                tooltip: tooltips,
+                legend: legends,
+                xAxis: xAxises,
+                yAxis: yAxises,
+                series: [
+                    {
+                        name: 'PY Sales',
+                        type: 'bar',
+                        label: {
+                            show: false,
+                            position: 'inside',
+                            formatter: function(params) {
+                                if (params.value > 0) {
+                                    return params.value;
+                                } else {
+                                    return '';
+                                }
+                            }
+                        },
+                        itemStyle: {
+                            color: '#a5a5a5'
+                        },
+                        data: [0,0,0,0,0,21339,142260,0,206277,35565,21339,85356,113808]
+                    },
+                    {
+                        name: 'Actual',
+                        type: 'bar',
+                        label: {
+                            show: false,
+                            position: 'inside',
+                            formatter: function(params) {
+                                if (params.value > 0) {
+                                    return params.value;
+                                } else {
+                                    return '';
+                                }
+                            }
+                        },
+                        itemStyle: {
+                            color: '#4ca5d4'
+                        },
+                        data: [113984,292085,21372,292085,156728,248955,106695,661508,28452,419666,14226,0,0]
+                    },
+                    {
+                        name: 'Target',
+                        type: 'bar',
+                        label: {
+                            show: false,
+                            position: 'inside',
+                            formatter: function(params) {
+                                if (params.value > 0) {
+                                    return params.value;
+                                } else {
+                                    return '';
+                                }
+                            }
+                        },
+                        itemStyle: {
+                            color: '#85c0e2'
+                        },
+                        data: [113984,292085,235093,277837,313457,199164,177825,256068,256068,270294,320085,0,0]
+                    },
+                    {
+                        name: 'Net Growth',
+                        type: 'bar',
+                        itemStyle: {
+                            color: '#fb8d3c'
+                        },
+                        label: {
+                            show: false,
+                            position: 'inside',
+                            formatter: function(params) {
+                                if (params.value > 0) {
+                                    return params.value;
+                                } else {
+                                    return '';
+                                }
+                            }
+                        },
+                        data: [113984,292085,21372,292085,156728,227616,-35565,661508,-177825,384101,-7113,-85356,-113808]
+                    },
+                    {
+                        name: 'Ach%',
+                        type: 'line',
+                        symbol: 'circle',
+                        itemStyle: {
+                            normal: {
+                                color: '#cce9b0' // 折线条的颜色
+                            }
+                        },
+                        yAxisIndex: 1,
+                        data: [100,100,9,105,50,125,60,258,11,155,4,0,0]
+                    },
+                    {
+                        name: 'Growth%',
+                        type: 'line',
+                        symbol: 'circle',
+                        itemStyle: {
+                            normal: {
+                                color: '#96d0c5' // 折线条的颜色
+                            }
+                        },
+                        yAxisIndex: 1,
+                        data: [0,0,0,0,0,1067,-25,0,-86,1080,-33,0,0]
+                    },
+                    {
+                        name: '库存',
+                        type: 'line',
+                        symbol: 'circle',
+                        itemStyle: {
+                            normal: {
+                                color: '#FF82AB', // 折线条的颜色
+                                borderColor: '#FF82AB', // 拐点边框颜色
+                                areaStyle: {
+                                    type: 'default',
+                                    opacity: 0.1
+                                }
+                            }
+                        },
+                        data: [0,0,0,0,0,0,0,0,0,0,0,0,0]
+                    },
+                    {
+                        name: '预测',
+                        type: 'bar',
+                        itemStyle: {
+                            color: '#CDBE70'
+                        },
+                        label: {
+                            show: false,
+                            position: 'inside',
+                            formatter: function(params) {
+                                if (params.value > 0) {
+                                    return params.value;
+                                } else {
+                                    return '';
+                                }
+                            }
+                        },
+                        data: [0,0,0,0,0,0,0,0,0,0,0,0,0]
+                    }
+                ]
+            };
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('productSalesInfoChart'));
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+
+
+        }
+
+    </script>
+
+</apex:page>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="119" height="119" viewBox="0 0 119 119">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #f0f;
+        filter: url(#filter);
+      }
+
+      .cls-2 {
+        fill: #fff;
+        fill-rule: evenodd;
+      }
+    </style>
+    <filter id="filter" x="0" y="0" width="119" height="119" filterUnits="userSpaceOnUse">
+      <feOffset result="offset" dx="2.837" dy="0.977" in="SourceAlpha"/>
+      <feGaussianBlur result="blur" stdDeviation="4.472"/>
+      <feFlood result="flood" flood-color="#39aa70" flood-opacity="0.39"/>
+      <feComposite result="composite" operator="in" in2="blur"/>
+      <feBlend result="blend" in="SourceGraphic"/>
+      <feImage preserveAspectRatio="none" x="16" y="18" width="80" height="80" result="image" xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbDogdXJsKCNsaW5lYXItZ3JhZGllbnQpOwogICAgICB9CiAgICA8L3N0eWxlPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJsaW5lYXItZ3JhZGllbnQiIHgxPSI0MCIgeTE9IjgwIiB4Mj0iNDAiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMjA5MjU4Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMC4wMjEiIHN0b3AtY29sb3I9IiMyMDkyNTgiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjc1MSIgc3RvcC1jb2xvcj0iIzMxY2M3ZCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNiN2Y5ZDciLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IGNsYXNzPSJjbHMtMSIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIi8+Cjwvc3ZnPgo="/>
+      <feComposite result="composite-2" operator="in" in2="SourceGraphic"/>
+      <feBlend result="blend-2" in2="blend"/>
+    </filter>
+  </defs>
+  <circle id="椭圆_1_拷贝_2" data-name="椭圆 1 拷贝 2" class="cls-1" cx="56" cy="58" r="40"/>
+  <path id="圆角矩形_1237_拷贝_2" data-name="圆角矩形 1237 拷贝 2" class="cls-2" d="M76.28,49.247L54.313,73.841a4.029,4.029,0,0,1-4.871.7l-0.034-.018a4.067,4.067,0,0,1-.462-0.307c-0.072-.052-0.15-0.089-0.219-0.146L36.547,64.059a4.273,4.273,0,0,1-.631-5.914l1.287-1.64a4.049,4.049,0,0,1,5.78-.645l7.773,6.388L69.012,41.811a4.046,4.046,0,0,1,5.815,0L76.28,43.3A4.276,4.276,0,0,1,76.28,49.247Z"/>
+</svg>

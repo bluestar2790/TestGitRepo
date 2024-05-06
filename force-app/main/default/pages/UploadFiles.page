@@ -1,0 +1,166 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" lightningStylesheets="true" docType="html-5.0" controller="UploadFilesController">
+<html xmlns:v-model="https://cn.vuejs.org" xmlns:v-on="https://cn.vuejs.org" xmlns:v-bind="https://cn.vuejs.org" xmlns:v-for="https://cn.vuejs.org" xmlns:v-slot="https://cn.vuejs.org" xmlns:xlink="http://www.w3.org/2000/svg">
+<apex:slds />
+    <head>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/vue.min.js')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.js')}" />
+        
+        <style type="text/css">
+
+        </style>
+    </head>
+    <body>
+        <div id="app" class="slds-scope" style="padding: 30px;">
+            <input type="file" accept="image/*, .pdf, .doc, .docx, .docm, .zip, .rar, .xlsx, .xls" v-model="fileName" v-on:change="fileChange" />
+            <div style="padding-top: 10px;">
+	        	<input type="button" v-on:click="save" value="上传文件" />
+	        </div>
+        </div>
+    </body>
+</html>
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#app',
+            data: {
+            	//文件名
+                fileName: '',
+                //文件内容
+			    file: {},
+			    //文件分割块长度
+    			chunkSize: 3000000,
+    			//文件分割起始长度
+    			positionIndex: 0,
+    			//是否继续分割
+    			doneUploading: false,
+            },
+            methods: {
+            	/**
+                * 上传文件改变事件
+                */
+    			fileChange: function(event) {
+    				console.log("event.target.files[0]");
+    				console.log(event.target.files[0]);
+    				let myflie = event.target.files[0];
+    				if(myflie != undefined && myflie != null) {
+						this.file = myflie;	
+    				} else {
+    					this.file = {};
+    				}
+    			},
+
+    			/**
+                * 读取文件操作
+                */
+                readerOnload : function(fileObj){
+    				return new Promise((resolve) => {
+    					var reader = new FileReader();
+	                    reader.readAsDataURL(this.file);
+	                    reader.onload = function(e) {  
+                        	fileObj.bodybase64 = reader.result.split('base64,')[1];
+                        	console.log("fileObj.bodybase64");
+                        	console.log(fileObj.bodybase64.length);
+                        	resolve(fileObj);
+                        }
+				    });
+    			},
+
+    			/**
+                * 保存按钮操作
+                * @param 
+                * @return 
+                * @authr czf
+                * @date 2022-04-19
+                */
+                save: async function() {
+
+    				let filestr = '';
+    				//文件版本id czf 2022-07-13
+    				let versionId = '';
+    				if(this.file.name != undefined) {
+    					let fileObj = {
+	    					type:this.file.type,
+	    					name:this.file.name,
+	    				}
+	                    await this.readerOnload(fileObj);
+	                    
+	                    //文件分块上传
+					    versionId = await this.uploadFile(versionId, fileObj);
+					    console.log("versionId111");
+					    console.log(versionId);
+    				}
+
+                },
+
+    			/**
+                * 文件分块上传
+                * @param versionId 文件版本id
+                * @param fileObj 文件内容
+                * @return String 文件版本id
+                */
+                uploadFile: function(versionId, fileObj) {
+
+                	console.log("this.positionIndex");
+                	console.log(this.positionIndex);
+                	//深拷贝文件内容
+                	let myFileObj = JSON.parse(JSON.stringify(fileObj));
+                	let filestr = '';
+                	//如果文件大小比文件块小，则文件不分块
+                	if(fileObj.bodybase64.length <= this.positionIndex + this.chunkSize) {
+				        myFileObj.bodybase64 = fileObj.bodybase64.substring(this.positionIndex);
+				        this.doneUploading = false;
+				    } else {
+				        myFileObj.bodybase64 = fileObj.bodybase64.substring(this.positionIndex, this.positionIndex + this.chunkSize);
+				        this.doneUploading = true;
+				    }
+				    //文件内容
+                    filestr = JSON.stringify(myFileObj);
+                    console.log("uploadFile filestr");
+                    console.log(filestr);
+
+                	return new Promise((resove, reject) => {
+                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.UploadFilesController.uploadFileAction}', filestr, versionId, (data, event) => {
+	                        if (event.status) {
+	                            //版本id
+	                        	let versionId = '';
+	                        	if(data.status == 'success') {
+	                        		//如果需要分块，则继续递归调用
+	                        		if(this.doneUploading) {
+				                    	this.positionIndex += this.chunkSize;
+				                    	console.log("data.Id11");
+				                    	console.log(data);
+					                    console.log(data.Id);
+				                    	//获取返回的版本id
+				                    	versionId = this.uploadFile(data.Id, fileObj);
+				                    	console.log("versionId");
+				                    	console.log(versionId);
+				                    	resove(versionId);
+				                    } else {
+				                    	this.positionIndex = 0;
+				                    	console.log("data.Id");
+					                    console.log(data.Id);
+					                    resove(data.Id);
+				                    }
+	                        	} else {
+	                        		console.log(data.Msg);
+	                        	}
+	                        } else if (event.type === 'exception') {
+	                            reject(event.message);
+	                        } else {
+	                            reject(event.message);
+	                        }
+	                    });
+                    });
+                },
+
+            },
+            mounted: function() {
+                
+            },
+
+        });
+    </script>
+
+</apex:page>

@@ -1,0 +1,307 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" lightningStylesheets="true" docType="html-5.0">
+<html xmlns:v-model="https://cn.vuejs.org" xmlns:v-on="https://cn.vuejs.org" xmlns:v-bind="https://cn.vuejs.org" xmlns:v-for="https://cn.vuejs.org" xmlns:v-slot="https://cn.vuejs.org" xmlns:xlink="http://www.w3.org/2000/svg">
+<apex:slds />
+    <head>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <!-- 生产环境版本，优化了尺寸和速度 -->
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.all.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.all.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/main.css')}" />
+        <!-- 原材质库 -->
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/material-icons.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/vue.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Echarts, 'Echarts/echarts.min.js')}" />
+        
+        <style type="text/css">
+        .my-line {
+            width: 3px;
+            height: 1rem;
+            float: left;
+            background: #0096db;
+            margin-right: 0.5rem;
+        }
+        .my-secondary-title {
+            line-height: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+        }
+        .custom_th {
+            height: 2rem !important;
+            background-color: #f2fafe;
+            font-weight: bold !important;
+            color: black !important;
+            border: 0px !important;
+        }
+        .custom_expand {
+            margin: 0 0.5rem 0.5rem 0.5rem;
+            display: flex;
+            flex: 42 1 0%;
+            border: 1px solid #0000001f;
+            min-height: 5rem;
+            flex-direction: column;
+            border-radius: .4rem;
+            background-color: #f8fafc;
+            padding: 0.4rem 2rem;
+        }
+        .custom_expand .mu-text-field-input{
+            background : #f0f0f0;
+        }
+
+        .custom_expand .mu-input-line {
+            height: 0 !important;
+            position : initial !important;
+        }
+        .is-center {
+            text-align: center;
+        }
+
+
+        .mu-select {
+            border: 1px solid #d9d9d9;
+            background : #ffffff;
+            border-radius: .25rem;
+        }
+        .mu-input {
+            font-size: 0.75rem ;
+            width: 100%;
+            font-size: 0.75rem !important;
+            min-height: 1.6rem !important;
+            margin-bottom: 0px !important;
+        }
+        .mu-select .mu-select-content{
+            padding-left: 10px;
+        }
+        .mu-text-field-input{
+            background : #ffffff;
+            border-radius: .25rem;
+            border: 1px solid #d9d9d9;
+            padding: 0.25rem 0.5rem;
+        }
+        .mu-input-line {
+            height: 0 !important;
+            position : initial !important;
+        }
+        .mu-text-field-textarea {
+            height: 2.6rem !important;
+        }
+        </style>
+    </head>
+    <body>
+        <div id="app" class="slds-scope">
+            <div class="my-main-text" style="padding: 0 2rem;">
+                <div style="margin-top: 0.8rem;">
+                    <div class="my-secondary-title" style="border-bottom: 1px solid #a4caf4; margin-bottom: 1rem">
+                        <div class="my-line"></div>
+                        <p style="font-weight: bold; font-size:0.9rem">当前状态&nbsp;&amp;&nbsp;跨部门共识的下一步计划</p>
+                    </div>
+                    <mu-data-table style="width: 99.2%;margin-left: 11px;" v-bind:columns="columns" v-bind:stripe="false" v-bind:data="list" v-bind:sort.sync="sort" v-on:sort-change="sortData">
+                        <template slot="expand" slot-scope="prop" v-if="prop.row.edit == false">
+                            <div style="width: 100%;">
+                                <div style="border-style: solid; border-width: 0.5rem 0.5rem; border-color: #00000000 #00000000 #e0e0e0 #00000000; width: 0px; height: 0px; left: 90%; position: relative;"></div>
+                                <div style="width: 100%;">
+                                    <div style="width: 58%;">
+                                    </div>
+                                    <div class="custom_expand" style="width: 42%; float: right;">
+                                        <div style="display: flex; margin-left: 0.3rem; width: 100%; line-height: 2.3rem;">
+                                            <div style="font-weight: 500; flex: 20; color: #868686;">
+                                                赵二
+                                            </div>
+                                            <div style="font-weight: 500; flex: 25; color: #868686;">
+                                                2020-12-12
+                                            </div>
+                                            <div style="font-weight: 500; flex: 55; line-height: normal; font-weight: 600; margin-top: 0.55rem;">
+                                                提一个小小的建议，大家加油干啊！提一个小小的建议，大家加油干啊！提一个小小的建议，大家加油干啊！
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; margin-left: 0.3rem; width: 100%; line-height: 2.3rem;">
+                                            <div style="font-weight: 500; flex: 20; color: #868686;">
+                                                赵二
+                                            </div>
+                                            <div style="font-weight: 500; flex: 25; color: #868686;">
+                                                2020-12-12
+                                            </div>
+                                            <div style="font-weight: 500; flex: 55; line-height: normal; font-weight: 600; margin-top: 0.55rem;">
+                                                提一个小小的建议，大家加油干啊！
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; margin-left: .3rem; padding-top:0.5rem; align-items:center; height: 3rem;" v-for="">
+                                            <div style="margin-right: 1rem; flex: 72">
+                                                <mu-text-field class="custom_input" v-model="" label="" placeholder="发表评论" v-on:blur.stop="">
+                                                </mu-text-field>
+                                            </div>
+                                            <div style="height:2.6rem">
+                                                <mu-button color="blue" style="height: 1.9rem; width: 3rem; color:white; font-weight: bold;" v-on:click="" v-text="'确认'">
+                                                </mu-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </template>
+                        <template slot="header" style="width: 100%;">
+                            <!-- <th class="custom_th">周期</th>
+                            <th class="custom_th">当前状态</th>
+                            <th class="custom_th">下一步进展</th>
+                            <th class="custom_th">最后更新人/时间</th>
+                            <th class="custom_th">
+                                跨部门留言区
+                            </th> -->
+                        </template>
+                        <template slot-scope="scope" style="width: 100%;">
+                            <td>
+                                <template v-if="scope.row.edit == true">
+                                    <mu-select v-model="selectData" >
+                                        <mu-option v-for="option, index in selectList" v-bind:key="option" v-bind:label="option" v-bind:value="option"></mu-option>
+                                    </mu-select>
+                                </template>
+                                <template v-if="scope.row.edit == false">
+                                    {{scope.row.data1}}
+                                </template>
+                            </td>
+                            <td>
+                                <template v-if="scope.row.edit == true">
+                                    <mu-text-field placeholder="请输入..." v-bind:error-text="" multi-line="true" v-bind:rows="1" v-bind:rows-max="6">
+                                    </mu-text-field>
+                                </template>
+                                <template v-if="scope.row.edit == false">
+                                    {{scope.row.data2}}
+                                </template>
+                            </td>
+                            <td>
+                                <template v-if="scope.row.edit == true">
+                                    <mu-text-field v-model="datain" placeholder="请输入..." v-bind:error-text="" multi-line="true" v-bind:rows="1" v-bind:rows-max="6">
+                                    </mu-text-field>
+                                </template>
+                                <template v-if="scope.row.edit == false">
+                                    {{scope.row.data3}}
+                                </template>
+                            </td>
+                            <td class="is-center">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="flex: 43; color: #868686;">
+                                        {{scope.row.data7}}
+                                    </div>
+                                    <div style="flex: 22; border: 1px solid #ff8d64; text-align: center; color: #ff8d64; border-radius: 0.75rem 0.75rem; margin: 0 0.5rem;">
+                                        {{scope.row.data6}}
+                                    </div>
+                                    <div style="flex: 35;">
+                                        {{scope.row.data4}}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="is-center">
+                                <template v-if="scope.row.edit == false">
+                                    <div style="display: flex; align-items: center; padding: 0 1.5rem">
+                                        <mu-icon value="chat" size="20" style="margin-right: 0.25rem;">
+                                        </mu-icon>
+                                        {{scope.row.data5}}
+                                    </div>
+                                </template>
+                                <template v-if="scope.row.edit == true">
+                                    <div style="width: 70px; height: 20px; display: flex; justify-content: space-around;" >
+                                    <!-- 取消 -->
+                                        <mu-icon value="cancel" size="20" v-on:click="quitClick"></mu-icon>
+                                    <!-- 取消 -->
+                                    <!-- 保存 -->
+                                        <mu-icon value="check_circle" color="#4f9a66" size="20" v-on:click="saveClick"></mu-icon>
+                                    <!-- 保存 -->
+                                    </div>
+                                </template>
+                            </td>
+                        </template>
+                    </mu-data-table>
+                    <div style="height: 100px; margin-top: 0.5rem;">
+                        <img src="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/icon-add.svg')}" style="height:1.1rem;margin:0.125rem 0.25rem 0.125rem 0.5rem;" v-on:click=""/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#app',
+            data: {
+                columns: [
+                    { title: '周期', name: 'data1', width: '15%', sortable: true, class: 'custom_th' },
+                    { title: '当前状态', name: 'data2', width: '27%', align: 'center', sortable: false, class: 'custom_th' },
+                    { title: '下一步进展', name: 'data3', width: '24%', align: 'center', sortable: false, class: 'custom_th' },
+                    { title: '最后更新人/时间', name: 'data4', width: '22%', align: 'center', sortable: false, class: 'custom_th' },
+                    { title: '跨部门留言区', name: 'data5', width: '12%', align: 'center', sortable: false, class: 'custom_th' },
+                ],
+                list: [
+                    {
+                        data1: '2021-Q2',
+                        data2: '1.北京2.各试点',
+                        data3: '临床寻找合适',
+                        data4: '2021-Q3',
+                        data5: 7,
+                        data6: '站长',
+                        data7: '张三',
+                        edit: false,
+                    },
+                    {
+                        data1: '2021-Q2',
+                        data2: '1.北京2.各试点',
+                        data3: '临床寻找合适',
+                        data4: '2021-Q3',
+                        data5: 4,
+                        data6: '站长',
+                        data7: '张三',
+                        edit: false,
+                    },
+                    {
+                        data1: '2021-Q2',
+                        data2: '1.北京2.各试点',
+                        data3: '临床寻找合适',
+                        data4: '2021-Q3',
+                        data5: 4,
+                        data6: '站长',
+                        data7: '张三',
+                        edit: true,
+                    },
+                ],
+                //排序
+                sort: {
+                    name: '',
+                    order: 'desc',
+                },
+                selectList: ['2021-Q1','2021-Q2','2021-Q3','2021-Q4'],
+                selectData: '2021-Q1',
+                datain: '',
+            },
+
+            methods: {
+                sortData: function() {
+
+                },
+                addClick: function() {
+
+                },
+                saveClick: function() {
+
+                },
+                quitClick: function() {
+
+                },
+
+            },
+
+            mounted: function() {
+                
+            },
+
+        });
+
+        
+
+    </script>
+
+</apex:page>

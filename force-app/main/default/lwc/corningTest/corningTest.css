@@ -1,0 +1,28 @@
+.myborder-left {
+    border-left: 2px solid #fff;
+}
+
+.myth-background-1 {
+    background: #878787;
+    color: #fff;
+}
+
+.mytbody-1 {
+    background: #f3f3f3;
+}
+
+.myth-background-2 {
+    background: #b7bcbb !important;
+}
+
+.mytbody-2 {
+    background: #f3f3f3;
+}
+
+.div-border-top-color {
+    border-top-color: #9cd9f4;
+}
+
+.div-background-color {
+    background: #9cd9f4 !important;
+}

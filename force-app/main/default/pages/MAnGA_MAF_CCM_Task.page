@@ -1,0 +1,152 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" lightningStylesheets="true" docType="html-5.0">
+<html xmlns:v-model="https://cn.vuejs.org" xmlns:v-on="https://cn.vuejs.org" xmlns:v-bind="https://cn.vuejs.org" xmlns:v-for="https://cn.vuejs.org" xmlns:v-slot="https://cn.vuejs.org" xmlns:xlink="http://www.w3.org/2000/svg">
+<apex:slds />
+    <head>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <!-- 生产环境版本，优化了尺寸和速度 -->
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.all.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.all.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/main.css')}" />
+        <!-- 原材质库 -->
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/material-icons.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/vue.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Echarts, 'Echarts/echarts.min.js')}" />
+        
+        <style type="text/css">
+            .my-main-layout {
+                top: 0;
+                left: 0;
+            }
+
+
+        </style>
+    </head>
+    <body>
+        <div id="app" class="slds-scope">
+            <mu-container>
+              <mu-row>
+                <mu-col span="12" lg="4" sm="6">
+                  <mu-auto-complete v-if="selshow" v-bind:max-search-results="6" v-model="value5" open-on-focus="true" avatar="true" v-bind:filter="searchHospital" v-on:select="selectAcct" placeholder="提示">
+                    <template slot-scope="scope">
+                      <mu-list-item-action>
+                        <mu-avatar color="primary">
+                          <img v-bind:src="scope.item.url" />
+                        </mu-avatar>
+                      </mu-list-item-action>
+                      <mu-list-item-content v-html="scope.highlight"></mu-list-item-content>
+                    </template>
+                  </mu-auto-complete>
+                  <div v-if="divshow">
+                        <mu-avatar color="primary">
+                          <img v-bind:src="value6.url" />
+                        </mu-avatar>
+                        <p v-text="'[' + value6.dep + ']' + value6.name"></p>
+                        <mu-icon value="cancel" size="20" v-on:click="quitClick"></mu-icon>
+                  </div>
+                  <div v-if="value6.name == '' && !selshow">
+                        <mu-icon value="add" size="20" v-on:click="addClick"></mu-icon>
+                        <p v-text="'添加共识人'"></p>
+                  </div>
+                </mu-col>
+              </mu-row>
+            </mu-container>
+        </div>
+    </body>
+</html>
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#app',
+            data: {
+                fruits: [
+                    {
+                        name: '张三一',
+                        url: 'https://img.xiaopiu.com/userImages/img7159694579f0.jpeg',
+                        dep: 'ka',
+                    },
+                    {
+                        name: '张三二',
+                        url: 'https://img.xiaopiu.com/userImages/img7159694579f0.jpeg',
+                        dep: 'ta',
+                    },
+                    {
+                        name: '王三',
+                        url: 'https://img.xiaopiu.com/userImages/img7159694579f0.jpeg',
+                        dep: 'wa',
+                    },
+                    {
+                        name: '赵三',
+                        url: 'https://img.xiaopiu.com/userImages/img7159694579f0.jpeg',
+                        dep: 'za',
+                    },
+                    {
+                        name: '林三',
+                        url: 'https://img.xiaopiu.com/userImages/img7159694579f0.jpeg',
+                        dep: 'la',
+                    },
+                ],
+                value5: '',
+                value6: {name:'',url:'',dep:''},
+                selshow: false,
+                divshow: false,
+            },
+
+            methods: {
+                searchHospital : function(value, data, maxSearchResults){
+                    // console.log("---- value::"+value);
+                    // console.log("keyAcctName::"+this.keyAcctName);
+                    if(value.length < 2){
+                        return;
+                    }
+                    console.log("data");
+                    console.log(data);
+                    console.log("maxSearchResults");
+                    console.log(maxSearchResults);
+                    this.selectHospital = {};
+                    var dataLsit = [];
+                    for (var i = 0; i < this.fruits.length; i++) {
+                        if(this.fruits[i].name.indexOf(value) != -1) {
+                            dataLsit.push({value : this.fruits[i].name, item: this.fruits[i], highlight:this.fruits[i].name});
+                        }
+                    }
+                    console.log("dataLsit");
+                    console.log(dataLsit);
+
+                    return dataLsit;
+                },
+                selectAcct: function(value, item) {
+                    console.log("value");
+                    console.log(value);
+                    console.log("item");
+                    console.log(item);
+                    console.log("2222");
+                    this.value6 = item;
+                    this.value5 = '';
+                    this.selshow = false;
+                    this.divshow = true;
+
+                },
+                quitClick: function() {
+                    this.selshow = true;
+                    this.divshow = false;
+                },
+                addClick: function() {
+                    this.selshow = true;
+                }
+            },
+
+            mounted: function() {
+                this.$nextTick(function() {
+                    // drawProductSalesInfo();
+                });
+            },
+
+        });
+
+    </script>
+
+</apex:page>

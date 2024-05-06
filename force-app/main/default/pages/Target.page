@@ -1,0 +1,477 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" lightningStylesheets="true" docType="html-5.0" standardController="Produdct__c">
+<html xmlns:v-model="https://cn.vuejs.org" xmlns:v-on="https://cn.vuejs.org" xmlns:v-bind="https://cn.vuejs.org" xmlns:v-for="https://cn.vuejs.org" xmlns:v-slot="https://cn.vuejs.org" xmlns:xlink="http://www.w3.org/2000/svg">
+<apex:slds />
+    <head>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <!-- 生产环境版本，优化了尺寸和速度 -->
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.all.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.all.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/main.css')}" />
+        <!-- 原材质库 -->
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/vue.min.js')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/material-icons.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-toast.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Echarts, 'Echarts/echarts.min.js')}" />
+        
+        <style type="text/css">
+            .my-main-layout {
+                top: 0;
+                left: 0;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 3px;
+                margin: auto;
+            }
+
+            .mu-table-body td {
+                font-size: .75rem;
+            }
+    
+            .mu-table-body .custom_td {
+                font-size: .75rem;
+                text-align: center;
+            }
+
+            .mu-table-body .custom_td_t2 {
+                font-size: .75rem;
+                text-align: center;
+                border-bottom: 0px;
+            }
+
+            .mu-table-body .mu-input {
+                padding-bottom: 5px;
+            }
+    
+            .mu-table-empty {
+                height: 5rem;
+            }
+
+            .custom_th {
+                background-color: #dceef3;
+                text-align: center !important;
+                font-weight: bold !important;
+                color: black !important;
+            }
+            .mu-table table {
+                border-bottom: 1px solid #0000001f;
+            }
+
+            .custom_th_s {
+                font-size: 16px !important;
+                font-weight: bold;
+            }
+
+            .p_describe {
+                font-size: 11px;
+                padding-bottom: 20px;
+            }
+
+            .mu-select {
+                border: 1px solid #d9d9d9;
+                background : #ffffff;
+                border-radius: .25rem;
+            }
+
+            .mu-input {
+                font-size: 10px;
+                width: 100%;
+                font-size: 12px !important;
+                min-height: 20px !important;
+                margin-bottom: 0px !important;
+            }
+
+            .mu-select .mu-select-content{
+                padding-left: 10px;
+            }
+
+            .mu-text-field-input{
+                background : #ffffff;
+                border-radius: .25rem;
+                border: 1px solid #d9d9d9;
+                padding: 0.25rem 0.5rem;
+            }
+
+            .mu-input-line {
+                height: 0 !important;
+                position : initial !important;
+            }
+
+            /*.custom_td_t2 .mu-flat-button{
+                min-width: 50px;
+            }*/
+
+            .color {
+                color: #d43030;
+            }
+
+            .my-item-a {
+                position: absolute;
+                right: 1rem;
+                width: 6rem;
+                height: 1.35rem;
+                line-height: 1.35rem;
+                margin-top: 0.3rem;
+                font-size: 0.5rem;
+                font-weight: 400;
+                text-align: center;
+                font-style: italic;
+            }
+
+            .msgIcon {
+                background-image: url("/apexpages/slds/latest/assets/icons/utility/ban.svg") !important
+            }
+
+            .error-div1 {
+                height: 53px; 
+                background-color: #ea001e; 
+                margin: 0.75rem 0; 
+                padding: 0.5rem 0; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center;
+            }
+
+            .error-div2 {
+                height: 61px; 
+                margin: 0.75rem 0; 
+                padding: 0.5rem 0.75rem; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center;
+                border: 1px solid #c9c9c9;
+                border-radius: 0.25rem;
+                background: rgb(255, 255, 255);
+                -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.10);
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.10);
+                background-clip: padding-box;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="error-div1">
+            <div style="display: flex;">
+                <div><img class="msgIcon" src="/s.gif"></img></div>
+                <div>
+                    <div style="text-align: left; color: white;"><h4>错误：</h4></div>
+                    <div style="text-align: left; color: white;">没有签入不能填写拜访报告！</div>
+                </div>
+            </div>
+        </div>
+        <div class="error-div2">
+            <input class="btn" type="button" value="返回" />
+        </div>
+        <div id="app" class="slds-scope" v-if="false">
+            <div class="my-main-layout">
+                <div class="my-main-navigation">
+                    <img class="my-icon" src="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/icon-right.svg')}" />
+                    <p>上海交通大学医学院附属瑞金医院--HEMA_LL</p>
+                </div>
+                <div class="my-main-title" style="border-bottom: 2px solid #0096db33;">
+                    <img src="{!URLFOR($Resource.SF1_KA, 'SF1_KA/icon-hcp.png')}" />
+                    <p style="font-weight: bold; font-size: 1.0rem;">目标</p>
+                    <p class="my-item-a">仅显示本TA数据</p>
+                </div>
+                <div style="padding: 0px 10px 0px 20px">
+                    <div style="text-align:center;margin:1rem 0;color:#f2f2f2;">
+                        <mu-container>
+                            <mu-paper v-bind:z-depth="1">
+                                <mu-data-table v-bind:columns="columns" v-bind:stripe="true" v-bind:data="list">
+                                    <template slot="header" slot-scope="scope">
+                                        <th class="custom_th">TA</th>
+                                        <th class="custom_th">产品</th>
+                                        <th class="custom_th">
+                                            <div style="display: flex;justify-content: center;">
+                                                    （上月）预估
+                                                <mu-tooltip placement="right-start" style="position: relative;left: 0.2rem;">
+                                                    <template slot="content">
+                                                        <p>
+                                                            预估患者数:根据业务流向推算所得
+                                                        </p>
+                                                    </template>
+                                                    <mu-icon size="16" value="info" color="blue"></mu-icon>
+                                                </mu-tooltip>
+                                            </div>
+                                            患者数
+                                        </th>
+                                        <th class="custom_th">（本月）预估患者数<br />实际/目标</th>
+                                        <th class="custom_th">YTD盒数<br /> 实际/目标</th>
+                                        <th class="custom_th">YTD销量<br /> Ach/目标</th>
+                                        <th class="custom_th">YTD Growth%</th>
+                                        <th class="custom_th">YTD MS%</th>
+                                        <th class="custom_th">YTD TA全国医<br />院销售 排名</th>
+                                    </template>
+                                    <template slot-scope="scope">
+                                        <td style="color: #236cbe; font-weight: bold;" v-bind:rowspan="scope.row.flag" v-bind:hidden="scope.row.flag == 0 ? true : false">{{scope.row.name}}</td>
+
+                                        <td class="custom_td">{{scope.row.calories}}</td>
+                                        <td class="custom_td">{{scope.row.fat}}</td>
+                                        <td class="custom_td">
+                                            {{scope.row.fat}}/ 
+                                            <label class="custom_th_s">{{scope.row.carbs}}
+                                            </label>
+                                        </td>
+                                        <td class="custom_td">{{scope.row.reality}}/ 
+                                            <label class="custom_th_s"> {{scope.row.protein}}</label>
+                                        </td>
+                                        <td class="custom_td">￥{{scope.row.Ach}}/ 
+                                            <label class="custom_th_s">￥{{scope.row.iron}}</label>
+                                        </td>
+                                        <td class="custom_td">
+                                            <p v-bind:class="scope.row.Growth > 0 ? '' : 'color'">{{scope.row.Growth}}%</p>
+                                            <mu-flex class="demo-linear-progress">
+                                                <mu-linear-progress mode="determinate" v-bind:value="Math.abs(scope.row.Growth)" v-bind:color="scope.row.Growth > 0 ? '#418fe7' : '#d43030'">
+                                                </mu-linear-progress>
+                                            </mu-flex>
+                                        </td>
+                                        <td class="custom_td">{{scope.row.MS}}</td>
+                                        <td class="custom_td">{{scope.row.sales}}</td>
+                                    </template>
+                                </mu-data-table>
+                            </mu-paper>
+                        </mu-container>
+                    </div>
+                    <div class="p_describe">
+                        <p>说明：</p>
+                        <p>1.患者数（实际）：YTD产品患者总数；由DSM手动填写；更新日期：2021-5</p>
+                        <p>2.患者数（目标）：YTD产品目标患者总数；数据来源IDiscover；更新至：2021-5</p>
+                        <p>3.YTD盒数（实际）：YTD产品实际销售盒数；数据来源IDiscover；更新至：2021-5</p>
+                        <p>4.YTD盒数（目标）：YTD产品目标销售盒数；数据来源IDiscover；更新至：2021-5</p>
+                        <p>5.YTD销量（Ach）：YTD产品销售达成；数据来源IDiscover；更新至：2021-5</p>
+                        <p>6.YTD销量（目标）：YTD产品销售目标；数据来源IDiscover；更新至：2021-5</p>
+                        <p>7.YTD Growth%：此医院YTD销售额增长比例（YTD销售额比去年同期销售额）；数据来源IDiscover；更新至：2021-5</p>
+                        <p>8.YTD MS%：产品在此医院市场份额比率；数据来源IDiscover；更新至：2021-5</p>
+                    </div>
+                </div>
+                <div class="my-main-title" style="border-bottom: 2px solid #0096db33;">
+                    <img src="{!URLFOR($Resource.SF1_KA, 'SF1_KA/icon-hcp.png')}" />
+                    <p style="font-weight: bold; font-size: 1.0rem;">质量目标（TA长期发展目标）</p>
+                    <p class="my-item-a" style="color: #0096db;">跨TA数据共享</p>
+                </div>
+                <div style="padding: 0px 10px 0px 20px; height: 500px">
+                    <div style="text-align:center;margin:1rem 0;color:#f2f2f2;">
+                        <mu-container>
+                            <mu-data-table v-bind:columns="qualityTarColumns" v-bind:data="qualityTarData">
+                                <template slot="header" slot-scope="scope">
+                                    <th style="padding-left: 0px;">TA</th>
+                                    <th style="text-align: center;">目标类型</th>
+                                    <th style="text-align: center;">描述</th>
+                                    <th style="text-align: center;">更新时间</th>
+                                    <th></th>
+                                </template>
+                                <template slot-scope="scope">
+                                    <td style="border-bottom: 0px; padding-left: 0px;">
+                                        <template v-if="scope.row.edit == true">
+                                            <mu-select v-model="scope.row.ta">
+                                                <mu-option v-for="option,index in options" v-bind:key="option" v-bind:label="option" v-bind:value="option"></mu-option>
+                                            </mu-select>
+                                        </template>
+                                        <template v-if="scope.row.edit == false">
+                                            <p>{{scope.row.ta}}</p>
+                                        </template>
+                                    </td>
+                                    <td class="custom_td_t2">
+                                        <template v-if="scope.row.edit == true">
+                                            <mu-select v-model="scope.row.tarType">
+                                                <mu-option v-for="option,index in options" v-bind:key="option" v-bind:label="option" v-bind:value="option"></mu-option>
+                                            </mu-select>
+                                        </template>
+                                        <template v-if="scope.row.edit == false">
+                                            {{scope.row.tarType}}
+                                        </template>
+                                    </td>
+                                    <td class="custom_td_t2">
+                                        <template v-if="scope.row.edit == true">
+                                            <mu-text-field v-model="scope.row.describes" placeholder="请输入..."></mu-text-field>
+                                        </template>
+                                        <template v-if="scope.row.edit == false">
+                                            {{scope.row.describes}}
+                                        </template>
+                                    </td>
+                                    <td class="custom_td_t2">
+                                        <template>
+                                            {{scope.row.upTime}}
+                                        </template>
+                                    </td>
+                                    <td class="custom_td_t2">
+                                        <template v-if="scope.row.edit == true">
+                                            <div style="width: 60px; height: 20px; display: flex; justify-content: space-around;">
+                                            <!-- 取消 -->
+                                            <!--  <img src="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/icon-fail.svg')}" style="height:1rem; width: 1rem; margin-right: 10px" v-on:click="deleteClick(scope.$index)"/> -->
+                                               <mu-icon value="cancel" size="20" v-on:click="deleteClick(scope.$index)"></mu-icon>
+                                            <!-- 取消 -->
+                                            <!-- 保存 -->
+                                            <!-- <img src="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/icon-check.svg')}" style="height:1rem; width: 1rem;" v-on:click="saveClick(scope.$index, scope.row)"/> -->
+                                                <mu-icon value="check_circle" color="#4f9a66" size="20" v-on:click="saveClick(scope.$index, scope.row)"></mu-icon>
+                                            <!-- 保存 -->
+                                            </div>
+                                        </template>
+                                    </td>
+                                </template>
+                            </mu-data-table>
+                        </mu-container>
+                    </div>
+                    <div style="height: 100px">
+                        <img src="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/icon-add.svg')}" style="height:1.1rem;margin:0.125rem 0.25rem 0.125rem 0.5rem;" v-on:click="addClick"/>
+                        <!-- <p style="color: blue" v-on:click="addClick">新增</p> -->
+                    </div>
+                    <div class="tc" style="padding-bottom: 2rem;">
+                        <mu-button color="primary" style="height: 2rem; width: 10rem; color:white;">
+                            保存并下一步
+                        </mu-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#app',
+            data: {
+                columns: [
+                    { title: 'TA', width: '10%', name: 'name', align: 'center', class: 'custom_th' },
+                    { title: '产品', width: '10%', name: 'calories',align: 'center', sortable: false, class: 'custom_th' },
+                    { title: '患者数（当月）实际', width: '9%', name: 'fat', align: 'center', sortable: false, class: 'custom_th' },
+                    { title: '患者数（下月）目标', width: '11%', name: 'carbs', align: 'center', sortable: false, class: 'custom_th' },
+                    { title: 'YTD盒数 实际/目标', width: '15%', name: 'protein', align: 'center', sortable: false, class: 'custom_th' },
+                    { title: 'YTD销量 Ach/目标', width: '18%', name: 'iron', align: 'center', sortable: false, class: 'custom_th'},
+                    { title: 'YTD Growth%', width: '10%', name: 'Growth', align: 'center', sortable: false, class: 'custom_th' },
+                    { title: 'YTD MS%', width: '8%', name: 'MS', align: 'center', sortable: false, class: 'custom_th' },
+                    { title: 'YTD TA全国医院销售 排名', width: '9%', name: 'sales', align: 'center', sortable: false, class: 'custom_th' }
+                ],
+                list: [
+                    {
+                        name: 'HEMA_LL',
+                        calories: '亿珂',
+                        fat: 110,
+                        carbs: 120,
+                        reality: "(纯销555) 560",
+                        protein: "520",
+                        Ach: '7,400,200',
+                        iron: '6,000,000',
+                        Growth: 14,
+                        MS: "55%",
+                        sales: 1,
+                        flag: 1
+                    },
+                    {
+                        name: 'HEMA_MM',
+                        calories: '万珂',
+                        fat: 110,
+                        carbs: 120,
+                        reality: "(纯销800) 1200",
+                        protein: "5000",
+                        Ach: '32,200',
+                        iron: '659,899',
+                        Growth: -4,
+                        MS: "55%",
+                        sales: 5,
+                        flag: 1
+                    },
+                    {
+                        name: 'ST',
+                        calories: '泽珂',
+                        fat: 110,
+                        carbs: 120,
+                        reality: "(纯销800) 1200",
+                        protein: "5000",
+                        Ach: '32,200',
+                        iron: '659,899',
+                        Growth: 44,
+                        MS: "55%",
+                        sales: 16,
+                        flag: 2
+                    },
+                    {
+                        name: 'ST',
+                        calories: '安森珂',
+                        fat: 110,
+                        carbs: 120,
+                        reality: "(纯销800) 1200",
+                        protein: "5000",
+                        Ach: '32,200',
+                        iron: '659,899',
+                        Growth: -11,
+                        MS: "55%",
+                        sales: 5,
+                        flag: 0
+                    }
+                ],
+                qualityTarColumns: [
+                    { title: 'TA', width: '20%', name: 'ta', align: 'center' },
+                    { title: '目标类型', width: '20%', name: 'tarType', align: 'center' },
+                    { title: '描述', width: '25%', name: 'describes', align: 'center' },
+                    { title: '更新时间', width: '25%', name: 'upTime', align: 'center' },
+                    { title: '', width: '10%', name: '', align: 'center' }
+                ],
+                qualityTarData: [
+                    {
+                        ta: 'HEMA_LL',
+                        tarType: '协会/学会组委会的单位',
+                        describes: '淋巴瘤治疗的规范化医院',
+                        upTime: '2021-06-11',
+                        edit: false
+                    },
+                    {
+                        ta: 'HHEMA_MM',
+                        tarType: '协会/学会组委会的单位',
+                        describes: '淋巴瘤治疗的规范化医院',
+                        upTime: '2021-06-11',
+                        edit: false
+                    },
+                    {
+                        ta: 'ST',
+                        tarType: '协会/学会组委会的单位',
+                        describes: '淋巴瘤治疗的规范化医院',
+                        upTime: '2021-06-11',
+                        edit: false
+                    }
+                ],
+                options: [
+                    '协会/学会组委会的单位', '公司的COE医院'
+                ],
+            },
+            methods: {
+                addClick: function() {
+                    var qualityTar = {
+                        ta: '请选择',
+                        tarType: '请选择',
+                        describes: '',
+                        upTime: '2021-06-11',
+                        edit: true
+                    }
+                    this.qualityTarData.push(qualityTar);
+                },
+                saveClick: function(index, row) {
+                    this.qualityTarData[index].ta = row.ta == "请选择" ? '' : row.ta;
+                    this.qualityTarData[index].tarType = row.tarType == "请选择" ? '' : row.tarType;
+                    this.qualityTarData[index].describes = row.describes;
+                    this.qualityTarData[index].upTime =row.upTime;
+                    this.qualityTarData[index].edit = false;
+                },
+                deleteClick: function(index) {
+                    this.$confirm('是否确定删除？', '提示', {
+                    type: 'info'}).then(({ result }) => {
+                        if (result) {
+                            app.qualityTarData.splice(index,1);
+                        } else {
+                            return;
+                        }
+                    });
+                },
+                
+            },
+
+        });
+
+    </script>
+
+</apex:page>

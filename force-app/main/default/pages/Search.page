@@ -1,0 +1,101 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" lightningStylesheets="true" docType="html-5.0" controller="SearchController">
+<html xmlns:v-model="https://cn.vuejs.org" xmlns:v-on="https://cn.vuejs.org" xmlns:v-bind="https://cn.vuejs.org" xmlns:v-for="https://cn.vuejs.org" xmlns:v-slot="https://cn.vuejs.org" xmlns:xlink="http://www.w3.org/2000/svg">
+<apex:slds />
+    <head>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/vue.min.js')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.js')}" />
+        
+        <style type="text/css">
+
+        .mu-input {
+            font-size: 0.75rem ;
+            width: 200px;
+            font-size: 0.75rem !important;
+            min-height: 1.6rem !important;
+            margin-bottom: 0px !important;
+        }
+
+        .mu-text-field-input{
+            background : #ffffff;
+            border-radius: .25rem;
+            border: 1px solid #d9d9d9;
+            padding: 0.25rem 0.5rem;
+        }
+        .mu-input-line {
+            height: 0 !important;
+            position : initial !important;
+        }
+
+        </style>
+    </head>
+    <body>
+        <div id="app" class="slds-scope" style="padding: 30px;">
+            <mu-auto-complete v-bind:max-search-results="6" v-model="userData.Name" open-on-focus="true" avatar="true" v-bind:filter="searchOrgUser" v-on:select="selectUser" placeholder="请输入用户名称搜索" v-bind:error-text="" style="width: 200px;  font-size: 13px;">
+                <template slot-scope="scope">
+                  <mu-list-item-action>
+                    <mu-avatar color="primary">
+                      <img v-bind:src="scope.item.SmallPhotoUrl" />
+                    </mu-avatar>
+                  </mu-list-item-action>
+                  <mu-list-item-content>
+                      <div v-text="scope.item.Name"></div>
+                      <div v-text="scope.item.Email">
+                      </div>
+                  </mu-list-item-content>
+                </template>
+            </mu-auto-complete>
+        </div>
+    </body>
+</html>
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#app',
+            data: {
+                userData: {
+                	Id: null,
+                	Name: ''
+                }
+            },
+            methods: {
+                /**
+                * 方法名 获取用户信息(组件方法)
+                */
+                searchOrgUser: function(value, data, maxSearchResults) {
+                    
+                    return new Promise((resove, reject) => {
+
+                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SearchController.getOrgUser}', value, (data, event) => {
+	                        if (event.status) {
+	                            var dataLsit = [];
+		                        for (var i = 0; i < data.length; i++) {
+		                            dataLsit.push({value: data[i].Name, item: data[i]});
+		                        }
+
+		                        resove(dataLsit);
+	                        } else if (event.type === 'exception') {
+	                            reject(event.message);
+	                        } else {
+	                            reject(event.message);
+	                        }
+	                    });
+
+                    }); 
+                },
+                /**
+                * 方法名 赋值用户信息(组件方法)
+                */
+                selectUser: function(value, item) {
+                	this.userData.Id = item.Id;
+                },
+            },
+            mounted: function() {
+                
+            },
+
+        });
+    </script>
+
+</apex:page>

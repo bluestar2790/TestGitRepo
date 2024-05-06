@@ -1,0 +1,65 @@
+<apex:page controller="AttachmentUploadController" >
+    <input id="js-input-file" type="file" />   
+    <input type="button" value="送信" onclick="submit()" />
+
+    <script>
+    function submit() {
+        // ファイルを取得
+        var file = document.getElementById('js-input-file').files[0];
+
+        // file を読み込む
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            // 親レコードの ID、ファイル名、ファイルの data uri を指定する。
+            uploadAttachment('0015g000003Lq3F', file.name, reader.result);
+        };
+        reader.onerror = function (error) {
+            console.log('ERROR: ', error);
+        };
+    }
+
+
+
+    var maxSizeForApexString = 6000000; // Apex の String 型変数の最大文字数
+    var chunkSize            =  950000; // Javascript Remoting で一度に送信したい文字数の上限
+
+    function uploadAttachment(parentId, fileName, dataURI) {
+        var contentType = dataURI.split(',')[0].split(':')[1].split(';')[0]; 
+        var dataString  = dataURI.split(',')[1];
+        var recordId    = null;
+        var curIndex    = 0;
+        if(dataString.length < maxSizeForApexString) {
+            console.log('Start uploading');
+            upload(parentId, recordId, fileName,  dataString, curIndex);
+        } else {
+            alert("File is too big.");
+        }
+    }
+
+    function upload(parentId, recordId, fileName,  dataString, curIndex) {
+        var chunk = dataString.slice(curIndex, curIndex + chunkSize);
+        curIndex += chunkSize;
+        AttachmentUploadController.uploadFileAndLinkTo(
+            parentId, recordId, fileName,  chunk,
+            function(result, event) {
+            	console.log("result");
+            	console.log(result);
+                if (event.status) {
+                    if (curIndex > dataString.length) {
+                        console.log('Uploading completed');
+                    } else {
+                        console.log('data sent: ' + curIndex + '/' +  dataString.length);
+                        upload(parentId, result, fileName,  dataString, curIndex);
+                    } 
+                } else if (event.type === 'exception') {
+                    console.error("EXCEPTION: " + event.message);
+                } else {
+                    console.error("ERROR: " + event.message);
+                }                
+            },
+            { buffer: false, escape: true, timeout: 30000 }
+        );
+    }
+    </script>
+</apex:page>

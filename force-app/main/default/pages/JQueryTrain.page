@@ -1,0 +1,99 @@
+<apex:page >
+<head>
+    <apex:includeScript value="{!URLFOR($Resource.jquery351min)}" />
+    <script src='/soap/ajax/41.0/connection.js'></script>
+    <script src='/soap/ajax/41.0/apex.js'></script>
+</head>
+
+
+<p id="panel1_ID" class="panel">
+    Hello,This is panel1!
+</p>
+<p id="panel1_ID" class="panel">
+    Hello,This is panel2!
+</p>
+<input type="text"  value="这是文本框" />
+<input type="button" id="panelBtn" value="改变p标签的值以及移除样式" />
+<input type="button" id="panelCssBtn" value="添加p标签样式" /> 
+
+<div>
+    产品名称： <input type="text" id="productName" /><br />
+    <input type="button" id="productNameBtn" value="获取数据" />
+    <input type="button" id="addBtn" value="添加数据" />
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#panelBtn").click(function(){
+            $("#panel1_ID").text("Hello");
+            $("p:last").removeAttr("style");
+        });
+
+        $(".panel").on('click', function(){
+            var str = $(this).text();
+            alert(str);
+        });
+
+        $("#panelCssBtn").on('click', function(){
+            $("p").css({ "color": "#ff0011","font-size": "20px"});
+
+        });
+
+        //查询
+        sforce.connection.sessionId = '{!$Api.Session_ID}';
+        $("#productNameBtn").on('click', function(){
+            var proName = $("#productName").val();
+            // var strName = "SELECT Name," +
+            //                      "ProductCategoriesFirst__c," +
+            //                      "ProductCategoriesSecond__c," +
+            //                      "ProductInventoryMax__c," +
+            //                      "ProductInventoryMin__c," +
+            //                      "ProductInventory__c," +
+            //                      "ProductPrice__c," +
+            //                      "ProductUnit__c," +
+            //                      "ProductStatus__c," +
+            //                      "ProductDescription__c " +
+            //                 "FROM Product__c " + 
+            //                "WHERE Name = '"+ proName + "'";
+            // var result = sforce.connection.query(strName);
+            // var accList = result.getArray("records");
+            callBackWebservice(proName);
+            
+        });
+
+        $("#addBtn").on('click', function(){
+            var acc1 = new sforce.SObject("Product__c");
+            acc1.Name = "产品四";
+            acc1.ProductCategoriesFirst__c = '保健';
+            acc1.ProductCategoriesSecond__c = '保健1';
+            acc1.ProductInventoryMax__c = 90;
+            acc1.ProductInventoryMin__c = 10;
+            acc1.ProductInventory__c = 40;
+            acc1.ProductPrice__c = 90;
+            acc1.ProductUnit__c = 'KG';
+            acc1.ProductStatus__c = '上架';
+            acc1.ProductDescription__c = '保健产品四';
+            var result = sforce.connection.create([acc1]);
+            if(result[0].getBoolean("success")){
+                console.log("产品创建成功");
+                console.log(result[0].id);
+            }else{
+                alert("创建失败" + result[0]);
+            }
+        });
+
+        function callBackWebservice(proName){
+            var result = sforce.apex.execute("ProductController", "queryProduct", {proName});
+            console.log(result);
+            
+        }
+
+
+
+});
+
+    
+</script>
+
+</apex:page>

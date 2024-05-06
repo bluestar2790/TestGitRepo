@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        stroke: #0096db;
+        stroke-width: 0.5px;
+      }
+
+      .cls-2 {
+        fill: #0096db;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <rect id="矩形_22_拷贝_7" data-name="矩形 22 拷贝 7" class="cls-1" y="0.688" width="23.313" height="23.125"/>
+  <path id="形状_48" data-name="形状 48" class="cls-2" d="M18.59,6.822c-0.571-.513-2,2-2,2l-6.064,6.455L7.461,12.517c-0.5-.449-1.855,0-1.855,0l-0.214-.872a1.116,1.116,0,0,0,0,1.668L9.6,17.1a1.445,1.445,0,0,0,1.855,0L18.59,8.683a1.225,1.225,0,0,0,0-1.861h0Zm0,0"/>
+</svg>

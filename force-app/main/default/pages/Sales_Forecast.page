@@ -1,0 +1,177 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" lightningStylesheets="true" docType="html-5.0">
+<html xmlns:v-model="https://cn.vuejs.org" xmlns:v-on="https://cn.vuejs.org" xmlns:v-bind="https://cn.vuejs.org" xmlns:v-for="https://cn.vuejs.org" xmlns:v-slot="https://cn.vuejs.org" xmlns:xlink="http://www.w3.org/2000/svg">
+<apex:slds />
+    <head>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <!-- 生产环境版本，优化了尺寸和速度 -->
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.all.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.all.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/main.css')}" />
+        <!-- 原材质库 -->
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/vue.min.js')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/material-icons.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-toast.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Echarts, 'Echarts/echarts.min.js')}" />
+        
+        <style type="text/css">
+            .my-item-a {
+                position: absolute;
+                right: 1rem;
+                width: 10rem;
+                height: 3rem;
+                line-height: 3rem;
+                margin-top: 0.3rem;
+                font-size: 1rem;
+                text-align: center;
+                color: #0096db;
+            }
+
+            .mu-table-body .custom_td_t2 {
+                font-size: .75rem;
+                text-align: center;
+                /*border-bottom: 0px;*/
+            }
+
+            .custom_th {
+                background-color: #e5e5e5;
+                text-align: center;
+            }
+
+            .mu-table{
+                width: 100% !important;
+            }
+
+            .mu-table table {
+                width: 100% !important;
+                table-layout: initial;
+            }
+
+            .mu-input{
+                min-height: 0px !important;
+                margin-bottom: 0px;
+                padding-bottom: 0px; 
+                padding-top: 0px;
+                width: auto;
+            }
+            .mu-text-field-input {
+                outline: none;
+                font-size: 0.75rem;
+                border: 1px solid #d9d9d9;
+                padding: 0.25rem 0.5rem;
+                width: 100%;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app" class="my-container" style="background: #ffffff; height: 350px">
+            <div class="my-main-title" style="border-bottom: 2px solid #0096db33; height: 50px; line-height: 4rem; padding: 0px 30px;">
+                <p style="font-weight: bold; font-size: 1.0rem;">销售预测</p>
+                <p class="my-item-a">查看历史提交记录</p>
+            </div>
+            <div  style="margin: 1rem 2rem 1rem 3rem;">
+                <div style="height: 30px">
+                    <div style="display: flex; float: left;">
+                        <div style="width: 60px;">预测月份</div>
+                        <div style="width: 120px; display: flex; align-items: center;">
+                            <mu-icon value="chevron_left" size="20" v-on:click=""></mu-icon>
+                            <p style="font-weight: bold;">2021年7月</p>
+                            <mu-icon value="chevron_right" size="20" v-on:click=""></mu-icon>
+                        </div>
+                    </div>
+                    <div style="width: 60px; display: flex; justify-content: space-around; float: right; padding-top: 5px;">
+                        <!-- 取消 -->
+                        <mu-icon value="cancel" size="20" v-on:click="deleteClick(scope.$index)"></mu-icon>
+                        <!-- 取消 -->
+                        <!-- 保存 -->
+                        <mu-icon value="check_circle" color="#4f9a66" size="20" v-on:click="saveClick(scope.$index, scope.row)"></mu-icon>
+                        <!-- 保存 -->
+                    </div>
+                </div>
+                <div style="margin:1rem 0;color:#f2f2f2; width: 100%">
+                    <mu-data-table v-bind:columns="columns" v-bind:data="list">
+                        <template slot="header" slot-scope="scope">
+                            <th class="custom_th" style="width: 20%; text-align: center;">产品</th>
+                            <th class="custom_th" style="width: 35%; text-align: center;">SKU</th>
+                            <th class="custom_th" style="width: 25%; text-align: center;">预测（盒）</th>
+                            <th style="border-bottom: 0px; width: 20%;"></th>
+                        </template>
+                        <template slot-scope="scope">
+                            <td class="custom_td_t2" style=" width: 20%;">
+                                <template v-if="scope.row.edit == false">
+                                    <p>{{scope.row.ta}}</p>
+                                </template>
+                            </td>
+                            <td class="custom_td_t2" style="width: 35%;">
+                                <template v-if="scope.row.edit == false">
+                                    <p>{{scope.row.tarType}}</p>
+                                </template>
+                            </td>
+                            <td class="custom_td_t2" style="width: 25%;">
+                                <template v-if="scope.row.edit == false">
+                                    <mu-text-field v-model="scope.row.describes" placeholder=""></mu-text-field>
+                                </template>
+                            </td>
+                            <td class="custom_td_t2" style="border-bottom: 0px; width: 20%; text-align: left;">
+                                <template v-if="scope.row.edit == false">
+                                    <mu-icon value="remove_circle_outline" size="24" v-on:click="deleteClick(scope.$index)"></mu-icon>
+                                </template>
+                            </td>
+                        </template>
+                    </mu-data-table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#app',
+            data: {
+                columns: [
+                    { title: '产品', name: 'ta', align: 'center'},
+                    { title: 'SKU', name: 'tarType', align: 'center'},
+                    { title: '预测（盒）', name: 'describes', align: 'center'},
+                    { title: '', name: '', align: 'center'},
+                ],
+                list: [
+                    {
+                        ta: '亿珂',
+                        tarType: '伊布替尼胶囊140mg*90',
+                        describes: 130,
+                        edit: false
+                    },
+                ],
+                qualityTarColumns: [
+                    
+                ],
+                qualityTarData: [
+                    
+                ],
+                options: [
+                    '协会/学会组委会的单位', '公司的COE医院'
+                ],
+            },
+            methods: {
+                addClick: function() {
+                    
+                },
+                saveClick: function(index, row) {
+                    
+                },
+                deleteClick: function(index) {
+                    
+                },
+                
+            },
+
+        });
+
+    </script>
+
+</apex:page>

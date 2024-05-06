@@ -1,0 +1,26 @@
+<aura:component implements="force:appHostable,force:hasRecordId,lightning:actionOverride,lightning:hasPageReference,flexipage:availableForRecordHome,flexipage:availableForAllPageTypes,force:lightningQuickAction" 
+                controller="ReaderReturnBookComponentController" 
+                access="global">
+
+    <aura:attribute name="readerName" type="String" />
+    <ui:inputText label="请输入读者姓名" value="{!v.readerName}" />
+    
+    <lightning:button label="查询" onclick="{!c.getreaderName}" />
+    <aura:attribute name="borrowIdList" type="List" />
+    <lightning:button label="还书" onclick="{!c.returnBook}" />
+    <lightning:button label="显示全部" onclick="{!c.init}" />
+
+    <aura:attribute name="mydata" type="Object"/>
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="selectedRowsCount" type="Integer" default="0"/>
+
+    <div style="height: 300px">
+        <lightning:datatable data="{!v.mydata}"
+                             columns="{!v.mycolumns}"
+                             keyField="Id"
+                             hideCheckboxColumn="false"
+                             onrowselection="{!c.getSelected}"/>
+    </div>
+
+    <lightning:input type="Text" aura:id="borrowchildBookId" label="扫码还书" onchange="{!c.autoReturnBook}" />
+</aura:component>

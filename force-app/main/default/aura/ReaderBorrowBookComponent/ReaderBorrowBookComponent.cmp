@@ -1,0 +1,23 @@
+<aura:component implements="force:appHostable,force:hasRecordId,lightning:actionOverride,lightning:hasPageReference,flexipage:availableForRecordHome,flexipage:availableForAllPageTypes,force:lightningQuickAction" 
+                controller="ReaderBorrowBookComponentController" 
+                access="global">
+    <lightning:recordEditForm aura:id="recordEditForm"
+                           objectApiName="Borrow__c">
+        <lightning:messages />
+        <lightning:inputField aura:id="readerId" fieldName="readerId__c" />
+        <lightning:button type="button" label="借书" onclick="{!c.borrowBook}" />
+    </lightning:recordEditForm>
+    <br />
+    <aura:attribute name="mydata" type="Object"/>
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="selectedRowsCount" type="Integer" default="0"/>
+    <aura:attribute name="bookDetailsIdList" type="String" />
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <div style="height: 300px">
+        <lightning:datatable data="{!v.mydata}"
+                             columns="{!v.mycolumns}"
+                             keyField="Id"
+                             hideCheckboxColumn="false"
+                             onrowselection="{!c.getSelected}"/>
+    </div>
+</aura:component>

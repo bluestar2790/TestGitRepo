@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsNeedExecute__c</fullName>
+    <externalId>false</externalId>
+    <formula>AND(NOW() &gt;= PlanExecuteTime__c, TEXT( Status__c )!= &apos;完成&apos;)</formula>
+    <label>是否需要执行</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

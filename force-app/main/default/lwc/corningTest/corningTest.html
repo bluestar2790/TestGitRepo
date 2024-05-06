@@ -1,0 +1,257 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <p>{recordId}</p>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-account">
+                        <!-- <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                            <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use>
+                        </svg> -->
+                        <img src="/img/icon/t4v35/custom/custom57_120.png" style="height: 2rem;" title="Roadmap">
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span class="slds-card__header-link slds-truncate">
+                            <span>Program Hierarchy – </span>
+                        </span>
+                    </h2>
+                </div>
+                <div class="slds-no-flex">
+                    <button class="slds-button slds-button_neutral">
+                        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                            <use xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#save">
+                            </use>
+                        </svg>
+                        Save
+                    </button>
+                    <button class="slds-button slds-button_neutral">
+                        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                            <use xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#save">
+                            </use>
+                        </svg>
+                        Save & Close
+                    </button>
+                    <button class="slds-button slds-button_neutral">
+                        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                            <use xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#close">
+                            </use>
+                        </svg>
+                        Close
+                    </button>
+
+                </div>
+            </header>
+        </div>
+        <div><lightning-input></lightning-input></div>
+        <div class="slds-card__body slds-card__body_inner">
+            <div>
+                <div style="padding-left: 4%; margin-bottom: 10px;">
+                    <button class="slds-button slds-button_neutral">
+                       Add TPM
+                    </button>
+                    <button class="slds-button slds-button_neutral">
+                        Delete TPM
+                     </button>
+                     <button class="slds-button slds-button_neutral">
+                        Expand/Collapse
+                     </button>
+                </div>
+                <table aria-multiselectable="true"
+                    class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid"
+                    aria-label="Example advanced table of Opportunities in actionable mode">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th style="width: 4%; background: #fff; height: 30px;" class="slds-text-align_right slds-cell_action-mode" scope="col">
+                                <!-- <span id="column-group-header" class="slds-assistive-text">Choose a row</span>
+                                <div class="slds-th__action slds-th__action_form">
+                                    <div class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-unique-id-293"
+                                            value="checkbox-unique-id-293" tabindex="0"
+                                            aria-labelledby="check-select-all-label column-group-header" />
+                                        <label class="slds-checkbox__label" for="checkbox-unique-id-293"
+                                            id="check-select-all-label">
+                                            <span class="slds-checkbox_faux"></span>
+                                            <span class="slds-form-element__label slds-assistive-text">Select All</span>
+                                        </label>
+                                    </div>
+                                </div> -->
+                            </th>
+                            <th style="width: 66%;" aria-label="Name" aria-sort="none"
+                                class="slds-is-resizable slds-is-sortable slds-cell_action-mode myborder-left myth-background-1" scope="col">
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Name">TPM</span>
+                                </div>
+                            </th>
+                            <th style="width: 15%;" aria-label="" aria-sort="none"
+                                class="slds-is-resizable slds-is-sortable slds-cell_action-mode myborder-left  myth-background-1" scope="col">
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="">*TPM Share</span>
+                                </div>
+                            </th>
+                            <th style="width: 15%;" aria-label="Close Date" aria-sort="none"
+                                class="slds-is-resizable slds-is-sortable slds-cell_action-mode myborder-left myth-background-1" scope="col">
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Close Date">TPM status</span>
+                                    </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="mytbody-1">
+                        <tr aria-selected="false" class="slds-hint-parent">
+                            <td style="width: 4%; background: #fff" class="slds-text-align_right slds-cell_action-mode" role="gridcell">
+                                <div class="slds-checkbox">
+                                    <input type="checkbox" name="options" id="checkbox-01" value="checkbox-01"
+                                        tabindex="0" aria-labelledby="check-button-label-01 column-group-header" />
+                                    <label class="slds-checkbox__label" for="checkbox-01" id="check-button-label-01">
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label slds-assistive-text">Select item 1</span>
+                                    </label>
+                                </div>
+                            </td>
+                            <th style="width: 66%;" class="slds-cell_action-mode myborder-left" scope="row">
+                                <div class="slds-truncate" title="Acme - 1,200 Widgets">
+                                    <span style="cursor:pointer;">
+                                    <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                                        <use xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#right">
+                                        </use>
+                                    </svg>
+                                    </span>
+                                    Acme - 1,200 Widgets
+                                </div>
+                                <div style="padding: 5px 0 5px 10px; margin-top:5px;" class="div-background-color">
+                                    <div style="color: blue; font-weight: 600;">Finishers Info</div>
+                                    <div style="padding-left: 3.25rem; margin-bottom: 10px;">
+                                        <button class="slds-button slds-button_neutral">
+                                           Add Finishers
+                                        </button>
+                                        <button class="slds-button slds-button_neutral">
+                                            Delete Finishers
+                                         </button>
+                                    </div>
+                                    <table aria-multiselectable="true"
+                                        class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols  div-border-top-color" role="grid"
+                                        aria-label="Example advanced table of Opportunities in actionable mode">
+                                        <thead>
+                                            <tr class="slds-line-height_reset div-border-top-color">
+                                                <th style="height: 30px; width:3.25rem" class="slds-text-align_right slds-cell_action-mode div-border-top-color div-background-color" scope="col">
+                                                    
+                                                </th>
+                                                <th aria-label="Name" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-cell_action-mode myth-background-2 myborder-left"
+                                                    scope="col">
+                                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                        <span class="slds-truncate" title="Name">Finishers name</span>
+                                                    </div>
+                                                </th>
+                                                <th aria-label="" aria-sort="none"
+                                                    class="slds-is-resizable slds-is-sortable slds-cell_action-mode myth-background-2 myborder-left" scope="col">
+                                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                        <span class="slds-truncate" title="">Finishers Share</span>
+                                                    </div>
+                                                </th>
+                                                <th aria-label="" aria-sort="none"
+                                                    class="slds-is-resizable slds-is-sortable slds-cell_action-mode myth-background-2 myborder-left" scope="col">
+                                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                        <span class="slds-truncate" title=""></span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="mytbody-2">
+                                            <tr aria-selected="false" class="slds-hint-parent">
+                                                <td class="slds-text-align_right slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-checkbox">
+                                                        <input type="checkbox" name="options" id="checkbox-11" value="checkbox-01" tabindex="0"
+                                                            aria-labelledby="check-button-label-01 column-group-header" />
+                                                        <label class="slds-checkbox__label" for="checkbox-01" id="check-button-label-11">
+                                                            <span class="slds-checkbox_faux"></span>
+                                                            <span class="slds-form-element__label slds-assistive-text">Select item 1</span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <th class="slds-cell_action-mode myborder-left" scope="row">
+                                                    <div class="slds-truncate" title="Acme - 1,200 Widgets">
+                                                        Acme - 1,200 Widgets
+                                                    </div>
+                                                </th>
+                                                <td class="slds-cell_action-mode myborder-left" role="gridcell">
+                                                    <div class="slds-truncate" title="Acme">Acme</div>
+                                                </td>
+                                                <td class="slds-cell_action-mode myborder-left" role="gridcell">
+                                                    <div class="slds-truncate" title="4/10/15">4/10/15</div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </th>
+                            <td valign="top" style="width: 15%;" class="slds-cell_action-mode myborder-left" role="gridcell">
+                                <div class="slds-truncate" title="Acme">Acme</div>
+                            </td>
+                            <td valign="top" style="width: 15%;" class="slds-cell_action-mode myborder-left" role="gridcell">
+                                <div class="slds-truncate" title="4/10/15">4/10/15</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <lightning-button onclick={handleAlertClick} label="Open Alert Modal">
+            </lightning-button>
+            <lightning-button onclick={handleConfirmClick} label="Open Confirm Modal">
+            </lightning-button>
+            <!-- <lightning-card  title="Opportinity List">
+                <lightning-datatable data={opportunities} columns={columns} key-field="Id"></lightning-datatable>        
+            </lightning-card>  -->
+            <lightning-barcode-scanner> </lightning-barcode-scanner>
+            <lightning-breadcrumbs>
+                <lightning-breadcrumb label="Parent Account" href="path/to/place/1">
+                </lightning-breadcrumb>
+                <lightning-breadcrumb label="Case" href="path/to/place/2">
+                </lightning-breadcrumb>
+            </lightning-breadcrumbs>
+        </div>
+        1111
+
+        <div>33333333333333333333333333</div>
+        <c-custom-picklist></c-custom-picklist>
+
+
+        <lightning-card title="EmpApi Example" icon-name="custom:custom14">
+            <div class="slds-m-around_medium">
+                <p>
+                    Use the buttons below to subscribe and unsubscribe to a
+                    streaming channel!
+                </p>
+                <lightning-input
+                    label="Channel Name"
+                    value={channelName}
+                    onchange={handleChannelName}
+                ></lightning-input>
+                <lightning-button
+                    variant="success"
+                    label="Subscribe"
+                    title="Subscribe"
+                    onclick={handleSubscribe}
+                    disabled={isSubscribeDisabled}
+                    class="slds-m-left_x-small"
+                ></lightning-button>
+                <lightning-button
+                    variant="destructive"
+                    label="Unsubscribe"
+                    title="Unsubscribe"
+                    onclick={handleUnsubscribe}
+                    disabled={isUnsubscribeDisabled}
+                    class="slds-m-left_x-small"
+                ></lightning-button>
+            </div>
+        </lightning-card>
+    
+        <!-- <footer class="slds-card__footer">
+            <a class="slds-card__footer-action" href="#">View All
+                <span class="slds-assistive-text">Accounts</span>
+            </a>
+        </footer> -->
+    </article>
+</template>

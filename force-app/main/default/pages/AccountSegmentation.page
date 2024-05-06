@@ -1,0 +1,1069 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" lightningStylesheets="true" docType="html-5.0">
+<html xmlns:v-model="https://cn.vuejs.org" xmlns:v-on="https://cn.vuejs.org" xmlns:v-bind="https://cn.vuejs.org" xmlns:v-for="https://cn.vuejs.org" xmlns:v-slot="https://cn.vuejs.org" xmlns:xlink="http://www.w3.org/2000/svg">
+<apex:slds />
+    <head>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <style type="text/css">
+            .my-item-a {
+                position: absolute;
+                right: 1rem;
+                text-decoration: underline;
+                color: #0096db;
+                width: 5rem;
+                height: 1.35rem;
+                line-height: 1.35rem;
+                margin-top: 0.3rem;
+                font-size: 0.75rem;
+                font-weight: 400;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app" style="padding: 0 1rem;">
+            <!-- <mu-container> -->
+            <div class="my-main-navigation">
+                <img class="my-icon" src="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/icon-right.svg')}" />
+                <p>上海交通大学医学院附属瑞金医院--HEMA_LL/血液病（淋巴瘤）-亿珂</p>
+            </div>
+            <div class="my-main-title">
+                <img src="{!URLFOR($Resource.SF1_KA, 'SF1_KA/icon-hcp.png')}" />
+                <p style="font-weight: bold; font-size: 1.1rem;">医生分层</p>
+            </div>
+            <!-- 目标HCP数量及分级 s-->
+            <div class="my-main-sub-title">
+                <div class="my-line"></div>
+                <p style="font-weight: bold;">目标HCP数量及分级</p>
+            </div>
+            <div style="padding: 0 1.2rem;">
+                <div class="slds-scope">
+                    <mu-row>
+                        <mu-col span="6">
+                            <div style="display: flex; align-items: center; justify-content: space-between; position: relative; top: 1rem; left: -0.2rem;">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control slds-input-has-fixed-addon">
+                                        <span class="slds-form-element__addon" id="fixed-text-addon-pre" style="color: #54698d;font-size: .75rem;">医院当前相关科室HCP总数</span>
+                                        <input type="text" id="Related_HCP_Count__c" class="slds-input" style="width: 6rem;" placeholder="请填入数字" />
+                                    </div>
+                                </div>
+                                <span style="color: #54698d;font-size: .75rem;">iConnect目标HCP总数
+                                    <mu-tooltip placement="top-start" content="TA各产品ABC级医生总数，不包含U级。" style="position: relative;top: 0.25rem;">
+                                        <mu-icon size="16" value="info" color="blue"></mu-icon>
+                                    </mu-tooltip>&emsp;41
+                                </span>
+                            </div>
+                        </mu-col>
+                        <mu-col span="6" />
+                    </mu-row>
+                    <mu-row>
+                        <mu-col span="6">
+                            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                            <div style="position: relative;">
+                                <div style="position: relative;top: 3.5rem;left: 0.6rem;">目标HCP分级占比</div>
+                                <div id="pie" style="width: 700px;height:300px;"></div>
+                            </div>
+                        </mu-col>
+                        <mu-col span="6">
+                            <div style="position: relative;top: 1rem;left: 6rem;">
+                                <div style="position: relative;top: 2.5rem;left: 1.7rem;">HCP分级</div>
+                                <div id="scatter" style="width: 300px;height:300px;position: relative;top: 1.2rem;"></div>
+                            </div>
+                        </mu-col>
+                    </mu-row>
+                </div>
+            </div>
+            <!-- 目标HCP数量及分级 e-->
+            <!-- 既往执行回顾 s-->
+            <div class="my-main-title" style="justify-content: space-between;">
+                <div style="display: flex;align-items:center;">
+                    <img src="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/icon-big-account.svg')}" />
+                    <p style="font-weight: bold;">既往执行回顾</p>
+                </div>
+                <a href="#" class="my-item-a" color="primary">活动整合回顾</a>
+            </div>
+            <div style="padding: 0 0.5rem;">
+                <div class="slds-scope">
+                    <mu-row>
+                        <mu-col span="9">
+                            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                            <div style="position: relative;">
+                                <div style="position: relative; top: 0.6rem; font-weight: bold;">本TA目标医生跨部门拜访&amp;活动覆盖医生数</div>
+                                <div id="bar_div" style="width: 100%;height:520px; margin-left: -4rem;"></div>
+                                <div style="padding: 0px 0px 10px 20px;">
+                                    <p>
+                                        数据来源：<br />
+                                        MAF覆盖：AMS 活动数据/iConnect的MSL拜访数据和医学洞察数据<br />
+                                        数据范围：该TA目标医生，所有参会数据（不限TA)<br />
+                                    </p>
+                                </div>
+                            </div>
+                        </mu-col>
+                        <mu-col span="3">
+                            <div style="position: relative;">
+                                <div style="position: relative; top: 1.2rem; font-weight: bold;">
+                                    <p>跨部门目标医生覆盖详情</p>
+                                </div>
+                                <div style="margin-top: 3rem">
+                                    <div style="height: 80px; width: 1px;float: left; margin-right: 15px; background-color: #e9e9e9">
+                                        <i style="display: inline-block; width: 10px; height: 10px;border: solid 2.5px; border-color: #96db74; margin-right: 5px; border-radius: 50%; margin-left: -4px; background-color: #fafafa">
+                                        </i>
+                                    </div>
+                                    <div style="height: 80px; width: 280px">
+                                        <p>2021-06-27[ST_MSL拜访]李燕燕拜访了上海交通大学医学院附属瑞金医院-血液科主任医师王黎
+                                        </p>
+                                    </div>
+                                    <div style="height: 90px; width: 1px;float: left; margin-right: 15px; background-color: #e9e9e9">
+                                        <i style="display: inline-block; width: 10px; height: 10px;border: solid 2.5px; border-color: #f9928c; margin-right: 5px; border-radius: 50%; margin-left: -4px; background-color: #fafafa">
+                                        </i>
+                                    </div>
+                                    <div style="height: 90px; width: 280px">
+                                        <p>2021-06-16 [活动计划] （HEMA_LL_城市会）上海交通大学医学院附属瑞金医院血液内科糜坚青（国家级讲者）即将参加6.16瑞金联合仁济中国首次复发的治疗时机城市会
+                                        </p>
+                                    </div>
+                                    <div style="height: 80px; width: 1px;float: left; margin-right: 15px; background-color: #e9e9e9">
+                                        <i style="display: inline-block; width: 10px; height: 10px;border: solid 2.5px; border-color: #4faaff; margin-right: 5px; border-radius: 50%; margin-left: -4px; background-color: #fafafa">
+                                        </i>
+                                    </div>
+                                    <div style="height: 80px; width: 280px">
+                                        <p>2021-05-26 [活动计划] （HEMA_LL_科室会）上海交通大学医学院附属瑞金医院血液内科召开科室会
+                                        </p>
+                                    </div>
+                                    <div style="height: 80px; width: 1px;float: left; margin-right: 15px; background-color: #e9e9e9">
+                                        <i style="display: inline-block; width: 10px; height: 10px;border: solid 2.5px; border-color: #96db74; margin-right: 5px; border-radius: 50%; margin-left: -4px; background-color: #fafafa">
+                                        </i>
+                                    </div>
+                                    <div style="height: 80px; width: 280px">
+                                        <p>2021-06-01  [ST_MSL拜访] 李燕燕拜访了首都医科大学附属北京同仁医院-内科主任医师周道斌
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </mu-col>
+                    </mu-row>
+                </div>
+                <hr style="border: 1px dashed; color: #c9c7c5" />
+                <!-- 客户参与活动类型 s-->
+                <div class="slds-scope" style="height: 400px; margin-right: 100px;">
+                    <div style="position: relative; top: 0.6rem; font-weight: bold; height: 34px;">
+                        <p>客户参与活动类型</p>
+                    </div>
+                    <div style="height: 40px">
+                        <div style="background-color: #40aefc; width: 74px; height: 30px; padding: 5px; border: solid 1px #40aefc; border-radius: 5px 0px 0px 5px; float: left;">
+                            <p style="font-size: 5px; color: #fafafa">过去3个月</p></div>
+                        <div style="background-color: #fafafa; width: 74px; height: 30px; text-align: center; padding: 5px; border: solid 1px #40aefc; border-radius: 0px 5px 5px 0px; float: left;">
+                            <p style="font-size: 5px; color: #40aefc">YTD</p>
+                        </div>
+                        <div style="float: right;">
+                            <p>活动涉及的治疗领域（参会者&amp;讲者） <a style="text-decoration: underline; ">查看明细</a></p>
+                            
+                        </div>
+                    </div>
+                    <div style="height: 25px; width: 100px">
+                        <p>2021.4~2021.6</p>
+                    </div>
+                    <mu-row>
+                        <mu-col span="6">
+                            <div style="position: relative;">
+                                <div id="radar" style="height: 300px; width: 100%; margin-left: -4rem;"></div>
+                            </div>
+                        </mu-col>
+                        <mu-col span="6">
+                            <div style="position: relative;">
+                                <div id="pie2" style="height: 300px; width: 100%;"></div>
+                            </div>
+                        </mu-col>
+                    </mu-row>
+                </div>
+                <!-- 客户参与活动类型 e-->
+                <hr style="border: 1px dashed; color: #c9c7c5" />
+                <!-- 本TA目标 HCP拜访&活动明细回顾(YTD) s-->
+                <div class="slds-scope" style="height: 400px; margin-right: 100px;">
+                    <div style="position: relative; top: 0.6rem; font-weight: bold; height: 34px;">
+                        <p>本TA目标&nbsp;HCP拜访&amp;活动明细回顾(YTD)</p>
+                    </div>
+                    <div style="height: 40px">
+                        <div style="background-color: #40aefc; width: 74px; height: 30px; padding: 5px; border: solid 1px #40aefc; border-radius: 5px 0px 0px 5px; float: left;">
+                            <p style="font-size: 5px; color: #fafafa">过去3个月</p></div>
+                        <div style="background-color: #fafafa; width: 74px; height: 30px; text-align: center; padding: 5px; border: solid 1px #40aefc; border-radius: 0px 5px 5px 0px; float: left;">
+                            <p style="font-size: 5px; color: #40aefc">YTD</p>
+                        </div>
+                    </div>
+                    <div style="height: 25px; width: 100px">
+                        <p>2021.4~2021.6</p>
+                    </div>
+                    <mu-row>
+                        
+                    </mu-row>
+                </div>
+                <!-- 本TA目标 HCP拜访&活动明细回顾(YTD) e-->
+            </div>
+            <!-- 既往执行回顾 e-->
+        </div>
+    </body>
+</html>
+    <!-- 生产环境版本，优化了尺寸和速度 -->
+    <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.all.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.all.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.SF1_KA, 'SF1_KA/svg/main.css')}" />
+    <!-- 原材质库 -->
+    <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/material-icons.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/vue.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.Echarts, 'Echarts/echarts.min.js')}" />
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#app',
+            data: {
+                key_hcp: {},
+                dept_color: {},
+                chart_not_applicable: false,
+            },
+            methods: {
+
+            },
+            mounted: function() {
+                console.log("mounted");
+                this.$nextTick(function() {
+                   init();
+                });
+            }
+        });
+
+        function init() {
+            drawChartPie();
+            drawChartScatter();
+            console.log("init");
+            drawChartBar();
+            drawChartRadar();
+            drawChartPie2();
+        }
+
+        function drawChartPie2() {
+            var colorList = ['#3c90f7', '#55bfc0', '#5ebe67', '#FDB36A', '#FD866A', '#9E87FF', '#58D5FF'];
+            let echartData = [
+                    { name: 'HEMA', value: 163 },
+                    { name: '免疫-消化', value: 1 },
+                    { name: '血液肿瘤', value: 16 }
+                ];
+
+            let total = echartData.reduce((a, b) => {
+                return a + b.value * 1
+            }, 0)
+    
+            let titles = [{
+                text: '{val|' + total + '次}',
+                top: 'center',
+                left: '25%',
+                textStyle: {
+                    rich: {
+                        val: {
+                            fontSize: 32,
+                            fontWeight: 'bold',
+                            color: '#333333',
+                        }
+                    }
+                }
+            }, ];
+            
+            let legend = {
+                orient: 'vertical',
+                icon: "circle",
+                x: '400',
+                y: 'center',
+                itemWidth: 12,
+                itemHeight: 12,
+                align: 'left',
+                textStyle: {
+                    rich: {
+                        name: {
+                            fontSize: 12,
+                            padding: [5, 0]
+                        },
+                        value: {
+                            fontSize: 12,
+                        },
+                        unit: {
+                            fontSize: 12
+                        },
+                        percent: {
+                            fontSize: 12
+                        }
+                    }
+                },
+                formatter: function(name) {
+                    let res = echartData.filter(v => v.name === name);
+                    res = res[0] || {};
+                    let unit = res.unit || '';
+                    let percent = (res.value * 100 / total).toFixed(2);
+                    return '{name|' + name + '}  {unit|' + unit + '}{percent|' + percent + '%}   {value|        ' +     res.value + '}'
+                }
+            };
+
+            let option = {
+                title: titles,
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: legend,
+                series: [{
+                    type: 'pie',
+                    center: ['33%', '50%'],
+                    radius: ['40%', '60%'],
+
+                    hoverAnimation: false,
+                    itemStyle: {
+                        normal: {
+                            color: function(params) {
+                                return colorList[params.dataIndex]
+                            }
+                        }
+                    },
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: echartData,
+                }]
+            };
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('pie2'));
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+
+        }
+
+        function drawChartRadar() {
+            console.log("radar");
+            var indexList = [];
+            let radars = {
+                // shape: 'circle',
+                indicator: [
+                    { name: '城市会-现场', max: 66},
+                    { name: '卫星会/展台', max: 66},
+                    { name: '其他活动', max: 66},
+                    { name: '学术活动', max: 66},
+                    { name: '城市会-网络', max: 66},
+                ],
+                splitArea: {
+                    show: false
+                },
+                splitNumber: 3,
+                axisLabel: {
+                  show: true,
+                  formatter: function (value, index) {
+                        if (indexList.indexOf(value) == -1) {
+                            indexList.push(value);
+                            return value;
+                        }
+                    }
+                },
+                
+            };
+            option = {
+                radar: radars,
+                series: [{
+                    type: 'radar',
+                    data: [{value: [40, 10, 66, 15, 50]}]
+                }],
+                color: '#6ca1f1',
+            };
+            console.log("radar2");
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('radar'));
+            // 使用刚指定的配置项和数据显示图表。
+            console.log("radar3");
+            myChart.setOption(option);
+            console.log("radar4");
+        }
+
+        function drawChartBar() {
+            console.log("drawChartBar");
+            let colorList = ['#4d72be', '#a26841', '#b4c8db', '#9fcd62', '#a5a5a5'];
+            let tooltips = [{
+                trigger: "axis",
+                // formatter: '{b}<br />{a0}覆盖: {c0}' + 
+                //               '<br />{a1}覆盖: {c1}' + 
+                //               '<br />{a2}覆盖: {c2}' + 
+                //               '<br />{a3}覆盖: {c3}' + 
+                //               '<br />{a4}: {c4}',
+                formatter: (params) => {
+                    console.log("params");
+                    console.log(params);
+                    let months = new Map([["01", "Jan"],["02", "Feb"], ["03", "Mar"], ["04", "Apr"], ["05", "May"], ["06", "Jun"], ["07", "Jul"], ["08", "Aug"], ["09", "Spt"], ["10", "Oct"], ["11", "Nov"], ["12", "Dec"]]);
+                    let y = params[0].axisValue.substring(2, 4);
+                    let m = params[0].axisValue.substring(5);
+                    let ym = months.get(m) + '-' + y;
+
+                    let list = []
+                    let listItem = ''
+
+                    for (var i = 0; i < params.length; i++) {
+                        params[i].data = params[i].data ? params[i].data : '0';
+                        if (i == 0) {
+                            list.push(ym + '<br />' + params[i].seriesName + '覆盖:&nbsp' + params[i].data);
+                        } else {
+                            if (i != params.length - 1) {
+                                list.push(params[i].seriesName + '覆盖:&nbsp' + params[i].data);
+                            } else {
+                                list.push(params[i].seriesName + ':&nbsp' + params[i].data);
+                            }
+                        }
+                   }
+
+                   listItem = list.join('<br />')
+                   return listItem;
+                }
+            }];
+            let xAxies = 
+            [{
+                type: 'category',
+                data: ['2020.06', '2020.07', '2020.08', '2020.09', '2020.10', '2020.11', '2020.12', '2021.01', '2021.02', '2021.03', '2021.04', '2021.05', '2021.06'],
+                axisLine: {onZero: true},
+                splitLine: {show: false},
+                splitArea: {show: false},
+                axisPointer: {
+                    type: 'none'
+                },
+                axisLabel: {
+                    interval: 0,
+                    // rotate: 30,
+                }
+            }];
+            let yAxies = [{
+                type: "value",
+                min: 0,
+                max: 45,
+                interval: 5
+            }];
+            let grids = [{
+                height: 400,
+                width: 820
+            }]
+
+            
+            option = {
+                grid: grids,
+                tooltip: tooltips,
+                legend: {
+                    bottom: "0%"
+                },
+                xAxis: xAxies,
+                yAxis: yAxies,
+                series: [
+                    {
+                        name: 'MAF',
+                        type: 'bar',
+                        stack: 'one',
+                        label: {
+                            show: true
+                        },
+                        barWidth: '55%',
+                        data: ['3','7','7','2','2','4','1','3','','2','','13','3']
+                    },
+                    {
+                        name: 'MKT',
+                        type: 'bar',
+                        stack: 'one',
+                        label: {
+                            show: true
+                        },
+                        data: ['2','2','4','2','1','3','1','','','2','1','2','']
+                    },
+                    {
+                        name: 'MANGA',
+                        type: 'bar',
+                        stack: 'one',
+                        label: {
+                            show: true
+                        },
+                        data: ['','1','','3','','5','','','','','2','','1']
+                    },
+                    {
+                        name: 'Sales',
+                        type: 'bar',
+                        stack: 'one',
+                        label: {
+                            show: true
+                        },
+                        data: ['23','16','21','24','33','18','14','10','9','4','8','9','4']
+                    },
+                    {
+                        name: '未覆盖',
+                        type: 'bar',
+                        stack: 'one',
+                        label: {
+                            show: true
+                        },
+                        data: ['13','15','9','10','5','11','25','28','32','33','30','17','33']
+                    }
+                ],
+                color: colorList
+            };
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('bar_div'));
+            console.log("11111");
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+            console.log("22222");
+
+        }
+
+        function drawChartPie() {
+            var colorList = ['#73DDFF', '#73ACFF', '#FDD56A', '#FDB36A', '#FD866A', '#9E87FF', '#58D5FF'];
+            var echartData = [];
+            echartData = [
+                    { name: 'A', value: 8 },
+                    { name: 'B', value: 13 },
+                    { name: 'C', value: 20 }
+                ];
+
+            let total = echartData.reduce((a, b) => {
+                return a + b.value * 1
+            }, 0)
+    
+            let titles = [{
+                text: '{name|目标HCP}\n{val|' + total + '}',
+                top: 'center',
+                left: 'center',
+                textStyle: {
+                    rich: {
+                        name: {
+                            fontSize: 12,
+                            fontWeight: 'normal',
+                            color: '#666666',
+                            padding: [10, 0]
+                        },
+                        val: {
+                            fontSize: 22,
+                            fontWeight: 'bold',
+                            color: '#333333',
+                        }
+                    }
+                }
+            }, ];
+            
+            let legend = {
+                orient: 'vertical',
+                icon: "circle",
+                x: '8',
+                y: 'center',
+                itemWidth: 12,
+                itemHeight: 12,
+                align: 'left',
+                textStyle: {
+                    rich: {
+                        name: {
+                            fontSize: 12,
+                            padding: [5, 0]
+                        },
+                        value: {
+                            fontSize: 12,
+                        },
+                        unit: {
+                            fontSize: 12
+                        },
+                        percent: {
+                            fontSize: 12
+                        }
+                    }
+                },
+                formatter: function(name) {
+                    let res = echartData.filter(v => v.name === name);
+                    res = res[0] || {};
+                    let unit = res.unit || '';
+                    let percent = (res.value * 100 / total).toFixed(2);
+                    return '{name|' + name + '}  {unit|' + unit + '}{percent|' + percent + '%}   {value|        ' +     res.value + '}'
+                }
+            };
+            
+            let grids = [{
+                left: '50%',
+                show: true,
+                borderWidth: 0.5,
+                backgroundColor: '#fff',
+                shadowColor: 'rgba(0, 0, 0, 0.3)',
+                shadowBlur: 1,
+                height: '100%',
+                top: '10',
+                width: '100%',
+                right: '10%'
+            }];
+            
+            option = {
+                grids: grids,
+                color: colorList,
+                title: titles,
+                tooltip: {
+                    trigger: 'item'
+                },
+            
+                legend: legend,
+                series: [{
+                    type: 'pie',
+                    center: ['50%', '50%'],
+                    radius: ['24%', '35%'],
+                    clockwise: true,
+                    avoidLabelOverlap: true,
+                    hoverOffset: 15,
+                    hoverAnimation: false,
+                    itemStyle: {
+                        normal: {
+                            color: function(params) {
+                                return colorList[params.dataIndex]
+                            }
+                        }
+                    },
+                    label: {
+                        show: true,
+                        position: 'outside',
+                        formatter: '{a|{b}：{d}%}\n{hr|}',
+                        rich: {
+                            hr: {
+                                backgroundColor: 't',
+                                borderRadius: 3,
+                                width: 3,
+                                height: 3,
+                                padding: [3, 3, 0, -12]
+                            },
+                            a: {
+                                padding: [-30, 15, -20, 15]
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            length: 20,
+                            length2: 30,
+                            lineStyle: {
+                                width: 1
+                            }
+                        }
+                    },
+                    data: echartData,
+                }]
+            };
+    
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('pie'));
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+    
+        }
+
+        function drawChartScatter() {
+
+            //散点矩阵图是否上下四格
+            var isFour = false;
+            var colorIndex = 0;
+            var dept_color = {};
+            var colorList = ['#73DDFF', '#73ACFF', '#FDD56A', '#FDB36A', '#FD866A', '#9E87FF', '#58D5FF', '#FFD700', '#FFC0CB', '#FFA07A', '#FF82AB', '#FF3E96', '#CDCD00', '#CDC673', '#CDBE70', '#CDB5CD', '#CD950C', '#CD8500', '#6E8B3D', '#6C7B8B', '#698B69', '#68838B', '#00FA9A', '#00EE00', '#008B8B', '#00688B', '#006400'];
+            var key_hcp = {};
+            key_hcp.scatterHCPs = 
+                [
+                    {
+                        "Name": "付止微", 
+                        "Id": "0019000001BbF2lAAF", 
+                        "JJ_CN_Listing_Department__c": "血液内科专业", 
+                        "JJ_CN_MKT_Rank__c": "C3"
+                    }, 
+                    {
+                        "Name": "曾荔苹", 
+                        "Id": "0012u00000Bo4ZEAAZ", 
+                        "JJ_CN_Listing_Department__c": "杨森其他", 
+                        "JJ_CN_MKT_Rank__c": "A1"
+                    }, 
+                    {
+                        "Name": "张静媛", 
+                        "Id": "0019000001BbF5yAAF", 
+                        "JJ_CN_Listing_Department__c": "传染科", 
+                        "JJ_CN_MKT_Rank__c": "B1"
+                    }, 
+                    {
+                        "Name": "吴瑞芳", 
+                        "Id": "0019000001BbF7GAAV", 
+                        "JJ_CN_Listing_Department__c": "消化内科专业", 
+                        "JJ_CN_MKT_Rank__c": "B1"
+                    }, 
+                    {
+                        "Name": "杨瑞", 
+                        "Id": "0019000001BbFBkAAN", 
+                        "JJ_CN_Listing_Department__c": "放射治疗专业", 
+                        "JJ_CN_MKT_Rank__c": "A2"
+                    }, 
+                    {
+                        "Name": "吴二平", 
+                        "Id": "0019000001BbFFHAA3", 
+                        "JJ_CN_Listing_Department__c": "传染科", 
+                        "JJ_CN_MKT_Rank__c": "B1"
+                    }, 
+                    {
+                        "Name": "李鹃", 
+                        "Id": "0019000001BbIi2AAF", 
+                        "JJ_CN_Listing_Department__c": "消化内科专业", 
+                        "JJ_CN_MKT_Rank__c": "C1"
+                    }, 
+                    {
+                        "Name": "楼宝阳", 
+                        "Id": "0019000001BbIi3AAF", 
+                        "JJ_CN_Listing_Department__c": "血液内科专业", 
+                        "JJ_CN_MKT_Rank__c": "B1"
+                    }, 
+                    {
+                        "Name": "樊尚荣", 
+                        "Id": "0019000001BbQD3AAN", 
+                        "JJ_CN_Listing_Department__c": "血液内科专业", 
+                        "JJ_CN_MKT_Rank__c": "B3"
+                    }
+                ]
+
+            for (var i = 0; i < key_hcp.scatterHCPs.length; i++) {
+
+                var scatter_hcp = key_hcp.scatterHCPs[i];
+
+                if (scatter_hcp.JJ_CN_MKT_Rank__c.indexOf('4') !== -1) {
+                    isFour = true;
+                }
+
+                if (!dept_color.hasOwnProperty(scatter_hcp.JJ_CN_Listing_Department__c)) {
+                    dept_color[scatter_hcp.JJ_CN_Listing_Department__c] = colorList[colorIndex];
+                    colorIndex++;
+                }
+            }
+
+            var xAxisPanelQty = isFour ? 4 : 3; //xAxis panel qty
+            var yAxisPanelQty = 3; //yAxis panel qty
+            var glassWidth = isFour ? 400 : 300;
+            var glassHeight = 300;
+            var leftposition = 10;
+            var topposition = 15;
+            var rightposition = 4;
+            var buttomposition = 40;
+            var panelshow = true; //panel grid show
+            var grids = [];
+            var xAxes = [];
+            var yAxes = [];
+            var series = [];
+            var titles = [];
+            var data = {};
+
+            /**
+             * 产生随机整数，包含下限值，包括上限值
+             * @param {Number} lower 下限
+             * @param {Number} upper 上限
+             * @return {Number} 返回在下限到上限之间的一个随机整数
+             */
+            var random = function(lower, upper) {
+                return Math.floor(Math.random() * (upper - lower + 1)) + lower;
+            }
+
+            for (var i = 0; i < key_hcp.scatterHCPs.length; i++) {
+
+            var JJ_CN_Listing_Department__c = key_hcp.scatterHCPs[i].JJ_CN_Listing_Department__c;
+            var JJ_CN_MKT_Rank__c = key_hcp.scatterHCPs[i].JJ_CN_MKT_Rank__c;
+            if(data[JJ_CN_Listing_Department__c]==null || data[JJ_CN_Listing_Department__c]== undefined){
+                    data[JJ_CN_Listing_Department__c] = [];
+                }
+                switch (JJ_CN_MKT_Rank__c) {
+                    case 'A4':
+                        data[JJ_CN_Listing_Department__c].push([random((-4 + xAxisPanelQty) * 100 + 5, (-3 + xAxisPanelQty) * 100 - 5), random(205, 295), JJ_CN_Listing_Department__c]);
+                        break;
+                    case 'A3':
+                        data[JJ_CN_Listing_Department__c].push([random((-3 + xAxisPanelQty) * 100 + 5, (-2 + xAxisPanelQty) * 100 - 5), random(205, 295), JJ_CN_Listing_Department__c]);
+                        break;
+                    case 'A2':
+                        data[JJ_CN_Listing_Department__c].push([random((-2 + xAxisPanelQty) * 100 + 5, (-1 + xAxisPanelQty) * 100 - 5), random(205, 295), JJ_CN_Listing_Department__c]);
+                        break;
+                    case 'A1':
+                        data[JJ_CN_Listing_Department__c].push([random((-1 + xAxisPanelQty) * 100 + 5, xAxisPanelQty * 100 - 5), random(205, 295), JJ_CN_Listing_Department__c]);
+                        break;
+                    case 'B4':
+                        data[JJ_CN_Listing_Department__c].push([random((-4 + xAxisPanelQty) * 100 + 5, (-3 + xAxisPanelQty) * 100 - 5), random(105, 195), JJ_CN_Listing_Department__c]);
+                     break;
+                 case 'B3':
+                     data[JJ_CN_Listing_Department__c].push([random((-3 + xAxisPanelQty) * 100 + 5, (-2 + xAxisPanelQty) * 100 - 5), random(105, 195), JJ_CN_Listing_Department__c]);
+                        break;
+                    case 'B2':
+                        data[JJ_CN_Listing_Department__c].push([random((-2 + xAxisPanelQty) * 100 + 5, (-1 + xAxisPanelQty) * 100 - 5), random(105, 195), JJ_CN_Listing_Department__c]);
+                        break;
+                    case 'B1':
+                        data[JJ_CN_Listing_Department__c].push([random((-1 + xAxisPanelQty) * 100 + 5, xAxisPanelQty * 100 - 5), random(105, 195), JJ_CN_Listing_Department__c]);
+                        break;
+                    case 'C4':
+                        data[JJ_CN_Listing_Department__c].push([random((-4 + xAxisPanelQty) * 100 + 5, (-3 + xAxisPanelQty) * 100 - 5), random(5, 95), JJ_CN_Listing_Department__c]);
+                        break;
+                    case 'C3':
+                        data[JJ_CN_Listing_Department__c].push([random((-3 + xAxisPanelQty) * 100 + 5, (-2 + xAxisPanelQty) * 100 - 5), random(5, 95), JJ_CN_Listing_Department__c]);
+                        break;
+                    case 'C2':
+                        data[JJ_CN_Listing_Department__c].push([random((-2 + xAxisPanelQty) * 100 + 5, (-1 + xAxisPanelQty) * 100 - 5), random(5, 95), JJ_CN_Listing_Department__c]);
+                        break;
+                    case 'C1':
+                        data[JJ_CN_Listing_Department__c].push([random((-1 + xAxisPanelQty) * 100 + 5, xAxisPanelQty * 100 - 5), random(5, 95), JJ_CN_Listing_Department__c]);
+                        break;
+                    default:
+                        break;
+                }
+                // console.log("JJ_CN_MKT_Rank__c");
+                // console.log(JJ_CN_MKT_Rank__c);
+                // console.log("data");
+                // console.log(data[JJ_CN_Listing_Department__c]);
+            }
+
+
+            if (data.length <= 0) {
+                app.chart_not_applicable = true;
+            }
+
+        //第个Panel 再进行分割
+            var qpanelXAxisCoordData = [];
+
+            var qpanelyAxisCoordData = [];
+
+        //设置glass中实际使用面积的grid
+            grids.push({
+                left: (leftposition) + '%',
+                show: true,
+                borderWidth: 0.5,
+                backgroundColor: '#fff',
+                shadowColor: 'rgba(0, 0, 0, 0.3)',
+                shadowBlur: 1,
+                height: 100 - (topposition) - (buttomposition) + '%',
+                top: (topposition) + '%',
+                width: 100 - (rightposition) - (leftposition) + '%',
+                right: rightposition + '%'
+            });
+            //给第一个grid 添加坐标轴
+            var xAxisCoordData = [];
+            for (m = 0; m < xAxisPanelQty; m++) {
+                xAxisCoordData.push((glassWidth / xAxisPanelQty * m).toFixed(0).toString());
+            }
+            var yAxisCoordData = [];
+            for (n = 0; n < yAxisPanelQty; n++) {
+                yAxisCoordData.push('');
+            }
+
+            xAxes.push({
+                // name: 'Width (mm)',
+                nameLocation: 'center',
+                inverse: false,
+                nameGap: '30',
+                min: 0,
+                max: glassWidth,
+                position: 'bottom',
+                splitLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLine: {
+                    show: false
+                },
+                splitNumber: xAxisPanelQty,
+                type: 'value',
+                scale: true,
+                interval: glassWidth / xAxisPanelQty,
+                axisLabel: {
+                    show: false,
+                    // formatter: function(value, index) {
+                    //     if (value === 0) {
+                    //         return '';
+                    //     } else {
+                    //         return value + '                      ';
+                    //     }
+                    // }
+                },
+                gridIndex: 0 //default is 0         
+            });
+
+            yAxes.push({
+                min: 0,
+                inverse: false,
+                max: glassHeight,
+                splitNumber: yAxisPanelQty,
+                interval: glassHeight / yAxisPanelQty,
+                splitLine: {
+                    show: false
+                },
+                axisLine: {
+                    show: false
+                },
+                axisLabel: {
+                    show: false,
+                },
+                axisTick: {
+                    show: false
+                },
+                type: 'value',
+                scale: true,
+                gridIndex: 0 //default is 0            
+            });
+
+            //每个panel 都对应成一个grid
+            for (var i = 0; i < xAxisPanelQty; i++) {
+                for (var j = 0; j < yAxisPanelQty; j++) {
+                    if (panelshow) {
+                        titles.push({
+                            text: String.fromCharCode(65 + j) + (-i + xAxisPanelQty),
+                            top: topposition + (j) / yAxisPanelQty * (100 - topposition - buttomposition) + 1 / yAxisPanelQty * (100 - topposition - buttomposition) / 5 + '%',
+                            left: (leftposition) + (i) / xAxisPanelQty * (100 - leftposition - rightposition) + 1 / xAxisPanelQty * (100 - topposition - buttomposition) / 1 + '%',
+                            textStyle: {
+                                fontSize: 12
+                            },
+                            textAlign: 'center',
+                            textBaseline: 'middle', //
+                            // textVeticalAlign: 'middle'
+                        });
+                    }
+
+                    if (i === 0) {
+                        if (j === 0) {
+                            grids.push({
+                                left: leftposition + '%',
+                                show: panelshow,
+                                borderWidth: 0,
+                                backgroundColor: '#fff',
+                                shadowColor: 'rgba(0, 0, 0, 0.3)',
+                                shadowBlur: 1,
+                                height: 1 / yAxisPanelQty * (100 - topposition - buttomposition) + '%',
+                                top: topposition + '%',
+                                width: (1 / xAxisPanelQty * (100 - leftposition - rightposition)) + '%',
+                                //右边距right的位置：左边100先减去第一个左移的leftposition%，再减去宽度 (1/xAxisPanelQty*(100-leftposition))+'%'
+                                right: ((100 - leftposition) - (1 / xAxisPanelQty * (100 - leftposition - rightposition))) + '%'
+                            });
+
+                        } else {
+
+                            grids.push({
+                                left: ((leftposition) + (i) / xAxisPanelQty * (100 - leftposition - rightposition)) + '%', //除去第一个左边距的4%,剩余渐分都以96%进行分割
+                                show: panelshow,
+                                borderWidth: 0,
+                                backgroundColor: '#fff',
+                                shadowColor: 'rgba(0, 0, 0, 0.3)',
+                                shadowBlur: 1,
+                                height: 1 / yAxisPanelQty * (100 - topposition - buttomposition) + '%',
+                                // top: (100-topposition)-(j/yAxisPanelQty*(100-topposition-buttomposition))+ '%',
+                                top: topposition + j / yAxisPanelQty * (100 - topposition - buttomposition) + '%',
+                                Width: (1 / xAxisPanelQty * (100 - leftposition - rightposition)) + '%',
+                                //右边距right的位置：左边100%先减去第一个左移的leftposition%，再减去(100-leftposition)%为起始的该grid的左边距(i/xAxisPanelQty*(100-leftposition))，再减去宽度 (1/xAxisPanelQty*(100-leftposition))+'%'
+                                right: ((100 - leftposition) - (i / xAxisPanelQty * (100 - leftposition - rightposition)) - (1 / xAxisPanelQty * (100 - leftposition - rightposition))) + '%'
+                            });
+
+                        }
+
+                    } else {
+                        if (j === 0) {
+                            grids.push({
+                                left: ((leftposition) + (i) / xAxisPanelQty * (100 - leftposition - rightposition)) + '%',
+                                show: panelshow,
+                                borderWidth: 0,
+                                backgroundColor: '#fff',
+                                shadowColor: 'rgba(0, 0, 0, 0.3)',
+                                shadowBlur: 1,
+                                height: 1 / yAxisPanelQty * (100 - topposition - buttomposition) + '%',
+                                top: topposition + '%',
+                                width: (1 / xAxisPanelQty * (100 - leftposition - rightposition)) + '%',
+                                //右边距right的位置：左边100先减去第一个左移的leftposition%，再减去宽度 (1/xAxisPanelQty*(100-leftposition))+'%'
+                                right: ((100 - leftposition) - (1 / xAxisPanelQty * (100 - leftposition - rightposition))) - (1 / xAxisPanelQty * (100 - leftposition - rightposition)) + '%'
+                            });
+                        } else {
+
+                            grids.push({
+                                left: ((leftposition) + (i) / xAxisPanelQty * (100 - leftposition - rightposition)) + '%', //除去第一个左边距的4%,剩余渐分都以96%进行分割
+                                show: panelshow,
+                                borderWidth: 0,
+                                backgroundColor: '#fff',
+                                shadowColor: 'rgba(0, 0, 0, 0.3)',
+                                shadowBlur: 1,
+                                height: 1 / yAxisPanelQty * (100 - topposition - buttomposition) + '%',
+                                top: topposition + j / yAxisPanelQty * (100 - topposition - buttomposition) + '%',
+                                Width: (1 / xAxisPanelQty * (100 - leftposition - rightposition)) + '%',
+                            //右边距right的位置：左边100%先减去第一个左移的leftposition%，再减去100-leftposition%为起始的该grid的左边距(i/xAxisPanelQty*(100-leftposition-rightposition))，再减去宽度 (1/xAxisPanelQty*(100-leftposition-rightposition))+'%'
+                                right: ((100 - leftposition) - (i / xAxisPanelQty * (100 - leftposition - rightposition)) - (1 / xAxisPanelQty * (100 - leftposition - rightposition))) + '%'
+                            });
+                        }
+                    }
+                }
+            }
+
+            //设置series
+            var colorList = [];
+            for(key in data){
+                series.push({
+                    name: key,
+                    data: data[key],
+                    type: 'scatter',
+                    symbolSize: 6,
+                    itemStyle: {
+                        color: function(params) {
+                            return params.color = dept_color[params.data[2]];
+                        }
+                    }
+                });
+                colorList.push(dept_color[key]);
+            }
+            
+            console.log("grids");
+            console.log(grids);
+            console.log("titles");
+            console.log(titles);
+            console.log("xAxis");
+            console.log(xAxes);
+            console.log("yAxes");
+            console.log(yAxes);
+            console.log("series");
+            console.log(series);
+
+
+            option = {
+                grid: grids,
+                title: titles,
+                xAxis: xAxes,
+                yAxis: yAxes,
+                series: series,
+                legend:{
+                    align: 'left',
+                    show: true,
+                    top:102-buttomposition+'%',
+                    itemWidth: 10,
+                    itemHeight: 10,
+                    textStyle: {
+                        rich: {
+                            name: {
+                                fontSize: 12,
+                                padding: [2, 0]
+                            },
+                            value: {
+                                fontSize: 12,
+                            },
+                            unit: {
+                                fontSize: 12
+                            },
+                            percent: {
+                                fontSize: 12
+                            }
+                        }
+                    },
+
+                },
+                color:colorList,
+            };
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('scatter'));
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }
+   </script>
+
+</apex:page>

@@ -1,0 +1,9 @@
+<aura:component implements="force:appHostable,force:hasRecordId,lightning:actionOverride,lightning:hasPageReference,flexipage:availableForAllPageTypes,force:lightningQuickAction,flexipage:availableForRecordHome" controller="testAuraController">
+	<div><h1> 11111 </h1> </div>
+	<!-- <aura:attribute name="test" type="String" default="testValue" /> -->
+	<!-- <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> -->
+	<!-- <lightning:input name="Name" value="{!v.test}"/> -->
+
+	<!-- <p>{!v.test} </p> -->
+	<c:corningTest />
+</aura:component>

@@ -1,0 +1,16 @@
+<template>
+    <c-named-slots>
+        <p>
+           First Name:
+           <slot name="firstName"><span slot="firstName">Willy</span></slot>
+        </p>
+        <p>
+           Last Name:
+           <slot name="lastName"><span slot="lastName">Wonka</span></slot>
+        </p>
+        <p>
+           Description:
+           <slot><span>Chocolatier</span></slot>
+        </p>
+    </c-named-slots>
+</template>

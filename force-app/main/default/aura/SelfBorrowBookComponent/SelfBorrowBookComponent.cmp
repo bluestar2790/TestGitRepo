@@ -1,0 +1,23 @@
+<aura:component implements="force:appHostable,force:hasRecordId,lightning:actionOverride,lightning:hasPageReference,flexipage:availableForRecordHome,flexipage:availableForAllPageTypes,force:lightningQuickAction" 
+                controller="SelfBorrowBookComponentController" 
+                access="global">
+    <lightning:recordEditForm aura:id="recordEditForm"
+                           objectApiName="Borrow__c">
+        <lightning:messages />
+        <lightning:inputField aura:id="readerId" fieldName="readerId__c" onchange="{!c.clearFlag}" />
+        <lightning:input aura:id="bookDetailsId" label="图书详细编号" onchange="{!c.addBook}"/>
+        <br />
+        <lightning:button type="button" label="自助借书" onclick="{!c.selfBorrowBook}" />
+    </lightning:recordEditForm>
+    <br />
+    <aura:attribute name="mydata" type="Object"/>
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="bookDetailsIdList" type="String" />
+    <!-- <aura:handler name="init" value="{! this }" action="{! c.init }"/> -->
+    <div>
+        <lightning:datatable data="{!v.mydata}"
+                             columns="{!v.mycolumns}"
+                             hideCheckboxColumn="true"
+                             keyField="Id"/>
+    </div>
+</aura:component>

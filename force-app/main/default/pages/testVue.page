@@ -1,0 +1,359 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" lightningStylesheets="true" docType="html-5.0" controller="testVueController">
+<html xmlns:v-model="https://cn.vuejs.org" xmlns:v-on="https://cn.vuejs.org" xmlns:v-bind="https://cn.vuejs.org" xmlns:v-for="https://cn.vuejs.org" xmlns:v-slot="https://cn.vuejs.org" xmlns:xlink="http://www.w3.org/2000/svg">
+<head>
+    <!-- 生产环境版本，优化了尺寸和速度 -->
+    <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.all.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.all.css')}" />
+    <!-- 原材质库 -->
+    <apex:stylesheet value="{!URLFOR($Resource.MuseUI, 'MuseUI/material-icons.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/vue.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-loading.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MuseUI, 'MuseUI/muse-ui-message.js')}" />
+    <apex:includeScript value="{!$Resource.SF1_Util}" />
+    <style>
+        .main {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            padding-top: 20px;
+            position: absolute;
+            overflow: hidden;
+        }
+        .page {
+            position: absolute;
+            padding: 0px 20px;
+            height: 100%;
+            width: 100%;
+            overflow: auto;
+        }
+        .div-count {
+            font-size: 14px;
+            color: rgba(0,0,0,.54);
+            display: block;
+            padding-left: 16px
+        }
+        .mu-card-title {
+            font-size: 22px !important;
+        }
+        .mu-card-sub-title {
+            margin-top: 10px;
+        }
+        .mu-card-text {
+            padding: 0px !important;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="app" class="main">
+        <div class="page">
+            <mu-container>
+                <mu-card style="width: 100%; width: 800px; min-width: 800px; margin: 0 auto;">
+                    <mu-card-header title="活动季度规划" style="text-align: center;">
+                    </mu-card-header>
+                    <mu-card-title title="主题活动/系列活动规划">
+                    </mu-card-title>
+                    <mu-card-text>
+                        <div class="div-count">
+                            计划累计场次：{{count}}
+                        </div>
+                        <div class="" style="text-align: right;margin-bottom: 10px;">
+                            <mu-button v-on:click="openAlertDialog">
+                                <mu-icon v-bind:left="true" value="add" color="#2097f3"></mu-icon>
+                                新增主题活动
+                            </mu-button>
+                            <mu-button v-on:click="saveClick" style="margin-right: 2px;">
+                                <mu-icon v-bind:left="true" value="save" color="#2097f3"></mu-icon>
+                                保存
+                            </mu-button>
+                        </div>
+                        <!-- 数据显示 -->
+                        <mu-paper class="demo-paper" v-bind:z-depth="1">
+                            <mu-data-table v-bind:columns="columns" v-bind:data="list" v-bind:sort.sync="sort" v-on:sort-change="handleSortChange">
+                                <template slot-scope="scope">
+                                    <td style="text-align: center;">{{scope.row.department__c}}</td>
+                                    <td style="text-align: center;">{{scope.row.title__c}}</td>
+                                    <td style="text-align: center;">{{scope.row.address__c}}</td>
+                                    <td style="text-align: center;">{{scope.row.number__c}}</td>
+                                    <td style="text-align: center; padding-top: 4px;">
+                                        <mu-icon v-bind:left="true" value="edit" color="#2097f3"
+                                            v-on:click="editClick(scope.$index, scope.row)"></mu-icon>
+                                        <mu-icon v-bind:left="true" value="remove_circle" color="darkgray"
+                                            v-on:click="delClick(scope.$index, scope.row)"></mu-icon>
+                                    </td>
+                                </template>
+                            </mu-data-table>
+                        </mu-paper>
+                        <!-- 弹窗表单 -->
+                        <mu-dialog v-bind:title="form.ac_department ? '修改主题活动': '新增主题活动'" width="750px" max-width="750px" v-bind:esc-press-close="false"
+                            v-bind:overlay-close="false" v-bind:open.sync="openAlert">
+                            <mu-form ref="form" class="mu-demo-form">
+                                <label for="ac_department">活动所属部门:</label>
+                                <mu-select name="ac_department" v-model="form.ac_department">
+                                    <mu-option v-for="option in options" v-bind:key="option" v-bind:label="option"
+                                        v-model="option"></mu-option>
+                                </mu-select>
+                                <label for="ac_title">活动主题:</label>
+                                <mu-text-field name="ac_title" v-model="form.ac_title"></mu-text-field>
+                                <label for="ac_address" style="margin-right: 30px;">活动地点:</label>
+                                <mu-text-field name="ac_address" v-model="form.ac_address"></mu-text-field>
+                                <label for="ac_number">计划场次:</label>
+                                <mu-text-field name="ac_number" v-model="form.ac_number"></mu-text-field>
+                                <mu-form-item>
+                                    <div style="margin: auto;" class="button-wrapper">
+                                        <mu-button color="blue" v-on:click="addClick" style="color:white">确认</mu-button>
+                                        <mu-button color="blue" v-on:click="closeAlertDialog" style="color:white">取消
+                                        </mu-button>
+                                    </div>
+                                </mu-form-item>
+                            </mu-form>
+                        </mu-dialog>
+                    </mu-card-text>
+                </mu-card>
+            </mu-container>
+            <div style="height: 50px; width: 100%">
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    // var app = new Vue({
+    //     el: '#app',
+    //     data:{
+    //         sort: {
+    //             name: '',
+    //             order: 'asc'
+    //         },
+    //         columns: [
+    //             { title: '活动所属部门', name: 'department__c', width: 100, align: 'left' },
+    //             { title: '活动主题', name: 'title__c', width: 200, align: 'center' },
+    //             { title: '活动地点', name: 'address__c', width: 200, align: 'center' },
+    //             { title: '计划场次', name: 'number__c', width: 100, align: 'center', sortable: true},
+    //             { title: '操作', name: 'addclick', width: 200, align: 'center' },
+    //         ],                    //table表头
+    //         list: [],             //存放显示的数据
+    //         delList: [],          //存放删除的数据
+    //         addList: [],          //存放添加的数据
+    //         updateList: [],       //存放更新的数据
+    //         options: [],          //存放下拉框的选项数据
+    //         editindex: -1,        //存放要修改的数据的下标
+    //         form: {
+    //             ac_department: '',
+    //             ac_title: '',
+    //             ac_address: '',
+    //             ac_number: ''
+    //         },
+    //         openAlert: false,      //弹窗标签，false时不弹窗，true时弹窗
+    //     },
+    //     /********************************************************************
+    //     * Purpose:查询ActivityPlan__c所有数据并显示在datatable，查询picklist字段
+    //               的值并赋给存放弹窗表单的下拉列表值的app.options
+    //     ********************************************************************/
+    //     mounted: function () {
+    //         this.$nextTick(function () {
+    //             // Visualforce.remoting.Manager.invokeAction(
+    //             //     '{!$RemoteAction.testVueController.queryAll}', 
+    //             //     function(data, event) {
+    //             //         if (event.status) {
+    //             //             app.list = data;
+    //             //         } else {
+                            
+    //             //         }
+    //             //     }, { escape: false });
+    //             // Visualforce.remoting.Manager.invokeAction(
+    //             //     '{!$RemoteAction.testVueController.getDepartment}', 
+    //             //     function(data, event) {
+    //             //         if (event.status) {
+    //             //             app.options = data;
+    //             //         } else {
+                            
+    //             //         }
+    //             //     }, { escape: false });
+
+    //             sf1_utility.remoteAction('{!$RemoteAction.testVueController.queryAll}')
+    //             .then(data =>{
+    //                 app.list = data;
+    //             })
+    //             .catch(error =>{
+    //                 console.log("queryAccountInfo 错误信息：：" + error);
+    //             })
+    //             .finally(()=>{
+                    
+    //             });
+
+    //             sf1_utility.remoteAction('{!$RemoteAction.testVueController.getDepartment}')
+    //             .then(data =>{
+    //                 app.options = data;
+    //             })
+    //             .catch(error =>{
+    //                 console.log("queryAccountInfo 错误信息：：" + error);
+    //             })
+    //             .finally(()=>{
+                    
+    //             });
+    //     });
+    //   },
+
+    //     methods: {
+    //         /********************************************************************
+    //         * Purpose:排序事件
+    //         ********************************************************************/
+    //         handleSortChange ({name, order}) {
+    //             app.list = app.list.sort((a, b) => order === 'asc' ? a[name] - b[name] : b[name] - a[name]);
+    //         },
+    //         /********************************************************************
+    //         * Purpose:打开弹窗
+    //         ********************************************************************/
+    //         openAlertDialog: function () {
+    //             app.openAlert = true;
+                
+    //         },
+    //         /********************************************************************
+    //         * Purpose:关闭弹窗，清空输入框数据
+    //         ********************************************************************/
+    //         closeAlertDialog: function () {
+    //             app.openAlert = false;
+    //             app.form.ac_department = '';
+    //             app.form.ac_title = '';
+    //             app.form.ac_address = '';
+    //             app.form.ac_number = '';
+    //         },
+    //         /********************************************************************
+    //         * Purpose:添加或修改数据事件
+    //         ********************************************************************/
+    //         addClick: function () {
+    //             var add = {department__c: '', title__c: '', address__c: '', number__c: ''};
+    //             add.department__c = app.form.ac_department;
+    //             add.title__c = app.form.ac_title;
+    //             add.address__c = app.form.ac_address;
+    //             add.number__c = app.form.ac_number;
+    //             if (!add.department__c) {
+    //                 alert("活动所属部门不能为空！");
+    //                 return;
+    //             }
+    //             if (!add.title__c) {
+    //                 alert("活动主题不能为空！");
+    //                 return;
+    //             }
+    //             if (!add.address__c) {
+    //                 alert("活动地点不能为空！");
+    //                 return;
+    //             }
+    //             if (!add.number__c) {
+    //                 alert("计划场次不能为空！");
+    //                 return;
+    //             }
+    //             if (isNaN(add.number__c)) {
+    //                 alert("计划场次只能是数字！");
+    //                 return;
+    //             }
+    //             //如果存在下标，则根据下标对数据进行修改，否则添加数据
+    //             if (app.editindex >= 0) {
+    //                 app.list[app.editindex].department__c = add.department__c;
+    //                 app.list[app.editindex].title__c = add.title__c;
+    //                 app.list[app.editindex].address__c = add.address__c;
+    //                 app.list[app.editindex].number__c = add.number__c;
+    //                 if (app.list[app.editindex].Id) {
+    //                     let i = app.updateList.findIndex(item=> {return item.Id == app.list[app.editindex].Id});
+    //                     if(i == -1) {
+    //                         app.updateList.push(app.list[app.editindex]);
+    //                     } else {
+    //                         app.updateList[i] = app.list[app.editindex];
+    //                     }
+    //                 }
+    //             } else {
+    //                 app.list.push(add);
+    //             }
+
+    //             app.closeAlertDialog();
+    //             app.editindex = -1;
+    //             app.form.ac_department = '';
+    //             app.form.ac_title = '';
+    //             app.form.ac_address = '';
+    //             app.form.ac_number = '';
+    //         },
+    //         /********************************************************************
+    //         * Purpose:删除数据事件，获取对应行下标和数据，根据数据是否有Id判断是否放进
+    //                   app.delList数组里，根据下标删除数据
+    //         ********************************************************************/
+    //         delClick: function (index, data) {
+    //             this.$confirm('是否确定删除？', '提示', {
+    //                 type: 'info'}).then(({ result }) => {
+    //                     if (result) {
+    //                         if (data.Id) {
+    //                             app.delList.push(data);
+    //                         }
+    //                         app.list.splice(index,1);
+    //                     } else {
+    //                         return;
+    //                     }
+    //                 });
+    //         },
+    //         /********************************************************************
+    //         * Purpose:编辑数据事件，获取对应行下标和数据
+    //         ********************************************************************/
+    //         editClick: function(index, data) {
+    //             app.openAlertDialog();
+    //             app.form.ac_department = data.department__c;
+    //             app.form.ac_title = data.title__c;
+    //             app.form.ac_address = data.address__c;
+    //             app.form.ac_number = data.number__c;
+    //             app.editindex = index;
+    //             console.log(app.editindex);
+    //         },
+
+    //         /********************************************************************
+    //         * Purpose:保存数据按钮，将经过添加、修改和删除操作的数据的最后结果提交到后台
+    //         ********************************************************************/
+    //         saveClick: function () {
+    //             for (var i = 0; i < app.list.length; i++) {
+    //                 if (! app.list[i].Id) {
+    //                     app.addList.push(app.list[i])
+    //                 }
+    //             }
+    //             this.$confirm('是否确定保存？', '提示', {
+    //                 type: 'info'}).then(({ result }) => {
+    //                     if (result) {
+    //                         Visualforce.remoting.Manager.invokeAction(
+    //                             '{!$RemoteAction.testVueController.saveData}', 
+    //                             app.addList, app.delList, app.updateList,
+    //                             function(data, event) {
+    //                                     if (event.status) {
+    //                                         alert("保存成功！")
+    //                                         location.reload();
+    //                                         } else {
+    //                                         alert("保存失败！");
+    //                                     }
+    //                                 }, { escape: false });
+    //                     } else {
+    //                         return;
+    //                     }
+    //                 });
+    //         }
+    //       },
+
+    //     computed: {
+    //         /********************************************************************
+    //         * Purpose:累计ac_number数值
+    //         ********************************************************************/
+    //         count: function () {
+    //           if (this.list.length > 0) {
+    //             var num = 0;
+    //             for (var i = 0; i < app.list.length; i++) {
+    //               num += Number(app.list[i].number__c);
+    //             }
+    //             return num;
+    //           } else {
+    //             return 0;
+    //           }
+    //         }
+    //     }
+    // });
+
+    var _0x2273=['ac_title','center','reload','compile','ac_address','asc','remoting','delList','list','addclick','findIndex','left','保存失败！','活动主题不能为空！','warn','form','closeAlertDialog','计划场次','活动所属部门不能为空！','return\x20(function()\x20','活动主题','info','活动地点','{!$RemoteAction.testVueController.getDepartment}','editindex','length','{!$RemoteAction.testVueController.queryAll}','then','console','return\x20/\x22\x20+\x20this\x20+\x20\x22/','trace','error','apply','活动地点不能为空！','{}.constructor(\x22return\x20this\x22)(\x20)','constructor','addList','活动所属部门','计划场次只能是数字！','title__c','^([^\x20]+(\x20+[^\x20]+)+)+[^\x20]}','{!$RemoteAction.testVueController.saveData}','address__c','catch','保存成功！','ac_number','是否确定保存？','debug','updateList','exception','finally','table','ac_department','queryAccountInfo\x20错误信息：：','是否确定删除？','sort','invokeAction','log','department__c','number__c','openAlertDialog','splice','push','$confirm','remoteAction','计划场次不能为空！','openAlert'];(function(_0x5b3d8e,_0x22739b){var _0x10145c=function(_0x44b701){while(--_0x44b701){_0x5b3d8e['push'](_0x5b3d8e['shift']());}};var _0x53adca=function(){var _0x5b155a={'data':{'key':'cookie','value':'timeout'},'setCookie':function(_0x2e0f3d,_0x164a5e,_0x1cde38,_0xd86d45){_0xd86d45=_0xd86d45||{};var _0xa263f7=_0x164a5e+'='+_0x1cde38;var _0x1ec87e=0x0;for(var _0x49413d=0x0,_0xf1491f=_0x2e0f3d['length'];_0x49413d<_0xf1491f;_0x49413d++){var _0x298818=_0x2e0f3d[_0x49413d];_0xa263f7+=';\x20'+_0x298818;var _0x24d693=_0x2e0f3d[_0x298818];_0x2e0f3d['push'](_0x24d693);_0xf1491f=_0x2e0f3d['length'];if(_0x24d693!==!![]){_0xa263f7+='='+_0x24d693;}}_0xd86d45['cookie']=_0xa263f7;},'removeCookie':function(){return'dev';},'getCookie':function(_0x20dc9e,_0x389259){_0x20dc9e=_0x20dc9e||function(_0x3018ac){return _0x3018ac;};var _0xe32c58=_0x20dc9e(new RegExp('(?:^|;\x20)'+_0x389259['replace'](/([.$?*|{}()[]\/+^])/g,'$1')+'=([^;]*)'));var _0x52db16=function(_0x306897,_0x1b8ada){_0x306897(++_0x1b8ada);};_0x52db16(_0x10145c,_0x22739b);return _0xe32c58?decodeURIComponent(_0xe32c58[0x1]):undefined;}};var _0x1290db=function(){var _0x2ae57a=new RegExp('\x5cw+\x20*\x5c(\x5c)\x20*{\x5cw+\x20*[\x27|\x22].+[\x27|\x22];?\x20*}');return _0x2ae57a['test'](_0x5b155a['removeCookie']['toString']());};_0x5b155a['updateCookie']=_0x1290db;var _0x565210='';var _0x46bfcd=_0x5b155a['updateCookie']();if(!_0x46bfcd){_0x5b155a['setCookie'](['*'],'counter',0x1);}else if(_0x46bfcd){_0x565210=_0x5b155a['getCookie'](null,'counter');}else{_0x5b155a['removeCookie']();}};_0x53adca();}(_0x2273,0x1e3));var _0x1014=function(_0x5b3d8e,_0x22739b){_0x5b3d8e=_0x5b3d8e-0x0;var _0x10145c=_0x2273[_0x5b3d8e];return _0x10145c;};var _0x2e0f3d=function(){var _0x33fbd8=!![];return function(_0x4d407d,_0x15a4f3){var _0x404df2=_0x33fbd8?function(){if(_0x15a4f3){var _0x34042d=_0x15a4f3[_0x1014('0x12')](_0x4d407d,arguments);_0x15a4f3=null;return _0x34042d;}}:function(){};_0x33fbd8=![];return _0x404df2;};}();var _0x46bfcd=_0x2e0f3d(this,function(){var _0x4ba9c7=function(){var _0x2cb981=_0x4ba9c7[_0x1014('0x15')](_0x1014('0xf'))()[_0x1014('0x38')](_0x1014('0x1a'));return!_0x2cb981['test'](_0x46bfcd);};return _0x4ba9c7();});_0x46bfcd();var _0x5b155a=function(){var _0x163b70=!![];return function(_0x24dd73,_0x43b7d9){var _0x179410=_0x163b70?function(){if(_0x43b7d9){var _0xd7f85a=_0x43b7d9[_0x1014('0x12')](_0x24dd73,arguments);_0x43b7d9=null;return _0xd7f85a;}}:function(){};_0x163b70=![];return _0x179410;};}();var _0x44b701=_0x5b155a(this,function(){var _0x21e6c6=function(){};var _0x2e984b;try{var _0x1e3d82=Function(_0x1014('0x5')+_0x1014('0x14')+');');_0x2e984b=_0x1e3d82();}catch(_0x56fd1d){_0x2e984b=window;}if(!_0x2e984b[_0x1014('0xe')]){_0x2e984b[_0x1014('0xe')]=function(_0x58250a){var _0x1b7f87={};_0x1b7f87[_0x1014('0x2b')]=_0x58250a;_0x1b7f87['warn']=_0x58250a;_0x1b7f87[_0x1014('0x21')]=_0x58250a;_0x1b7f87[_0x1014('0x7')]=_0x58250a;_0x1b7f87[_0x1014('0x11')]=_0x58250a;_0x1b7f87[_0x1014('0x23')]=_0x58250a;_0x1b7f87[_0x1014('0x25')]=_0x58250a;_0x1b7f87['trace']=_0x58250a;return _0x1b7f87;}(_0x21e6c6);}else{_0x2e984b[_0x1014('0xe')][_0x1014('0x2b')]=_0x21e6c6;_0x2e984b['console'][_0x1014('0x0')]=_0x21e6c6;_0x2e984b[_0x1014('0xe')][_0x1014('0x21')]=_0x21e6c6;_0x2e984b['console'][_0x1014('0x7')]=_0x21e6c6;_0x2e984b[_0x1014('0xe')][_0x1014('0x11')]=_0x21e6c6;_0x2e984b['console'][_0x1014('0x23')]=_0x21e6c6;_0x2e984b[_0x1014('0xe')][_0x1014('0x25')]=_0x21e6c6;_0x2e984b[_0x1014('0xe')][_0x1014('0x10')]=_0x21e6c6;}});_0x44b701();var app=new Vue({'el':'#app','data':{'sort':{'name':'','order':_0x1014('0x3a')},'columns':[{'title':_0x1014('0x17'),'name':_0x1014('0x2c'),'width':0x64,'align':_0x1014('0x40')},{'title':_0x1014('0x6'),'name':_0x1014('0x19'),'width':0xc8,'align':_0x1014('0x36')},{'title':_0x1014('0x8'),'name':_0x1014('0x1c'),'width':0xc8,'align':_0x1014('0x36')},{'title':_0x1014('0x3'),'name':_0x1014('0x2d'),'width':0x64,'align':_0x1014('0x36'),'sortable':!![]},{'title':'操作','name':_0x1014('0x3e'),'width':0xc8,'align':'center'}],'list':[],'delList':[],'addList':[],'updateList':[],'options':[],'editindex':-0x1,'form':{'ac_department':'','ac_title':'','ac_address':'','ac_number':''},'openAlert':![]},'mounted':function(){this['$nextTick'](function(){sf1_utility[_0x1014('0x32')](_0x1014('0xc'))['then'](_0x2d7977=>{app['list']=_0x2d7977;})[_0x1014('0x1d')](_0x43d532=>{console[_0x1014('0x2b')](_0x1014('0x27')+_0x43d532);})['finally'](()=>{});sf1_utility[_0x1014('0x32')](_0x1014('0x9'))[_0x1014('0xd')](_0x39ee7c=>{app['options']=_0x39ee7c;})['catch'](_0x434eb3=>{console['log']('queryAccountInfo\x20错误信息：：'+_0x434eb3);})[_0x1014('0x24')](()=>{});});},'methods':{'handleSortChange'({name,order}){app[_0x1014('0x3d')]=app[_0x1014('0x3d')][_0x1014('0x29')]((_0x10b0db,_0x419ece)=>order===_0x1014('0x3a')?_0x10b0db[name]-_0x419ece[name]:_0x419ece[name]-_0x10b0db[name]);},'openAlertDialog':function(){app[_0x1014('0x34')]=!![];},'closeAlertDialog':function(){app[_0x1014('0x34')]=![];app[_0x1014('0x1')][_0x1014('0x26')]='';app[_0x1014('0x1')][_0x1014('0x35')]='';app['form'][_0x1014('0x39')]='';app[_0x1014('0x1')]['ac_number']='';},'addClick':function(){var _0x48c6b4={'department__c':'','title__c':'','address__c':'','number__c':''};_0x48c6b4['department__c']=app[_0x1014('0x1')][_0x1014('0x26')];_0x48c6b4['title__c']=app[_0x1014('0x1')][_0x1014('0x35')];_0x48c6b4['address__c']=app[_0x1014('0x1')]['ac_address'];_0x48c6b4[_0x1014('0x2d')]=app[_0x1014('0x1')][_0x1014('0x1f')];if(!_0x48c6b4[_0x1014('0x2c')]){alert(_0x1014('0x4'));return;}if(!_0x48c6b4[_0x1014('0x19')]){alert(_0x1014('0x42'));return;}if(!_0x48c6b4[_0x1014('0x1c')]){alert(_0x1014('0x13'));return;}if(!_0x48c6b4[_0x1014('0x2d')]){alert(_0x1014('0x33'));return;}if(isNaN(_0x48c6b4['number__c'])){alert(_0x1014('0x18'));return;}if(app[_0x1014('0xa')]>=0x0){app[_0x1014('0x3d')][app[_0x1014('0xa')]]['department__c']=_0x48c6b4[_0x1014('0x2c')];app['list'][app[_0x1014('0xa')]]['title__c']=_0x48c6b4[_0x1014('0x19')];app[_0x1014('0x3d')][app[_0x1014('0xa')]][_0x1014('0x1c')]=_0x48c6b4[_0x1014('0x1c')];app[_0x1014('0x3d')][app[_0x1014('0xa')]][_0x1014('0x2d')]=_0x48c6b4[_0x1014('0x2d')];if(app[_0x1014('0x3d')][app[_0x1014('0xa')]]['Id']){let _0x42c962=app['updateList'][_0x1014('0x3f')](_0x3d5bf7=>{return _0x3d5bf7['Id']==app[_0x1014('0x3d')][app[_0x1014('0xa')]]['Id'];});if(_0x42c962==-0x1){app[_0x1014('0x22')]['push'](app[_0x1014('0x3d')][app[_0x1014('0xa')]]);}else{app[_0x1014('0x22')][_0x42c962]=app[_0x1014('0x3d')][app[_0x1014('0xa')]];}}}else{app[_0x1014('0x3d')][_0x1014('0x30')](_0x48c6b4);}app[_0x1014('0x2')]();app['editindex']=-0x1;app['form']['ac_department']='';app[_0x1014('0x1')][_0x1014('0x35')]='';app['form'][_0x1014('0x39')]='';app[_0x1014('0x1')][_0x1014('0x1f')]='';},'delClick':function(_0x2690c5,_0x42b492){this[_0x1014('0x31')](_0x1014('0x28'),'提示',{'type':_0x1014('0x7')})['then'](({result})=>{if(result){if(_0x42b492['Id']){app[_0x1014('0x3c')]['push'](_0x42b492);}app[_0x1014('0x3d')][_0x1014('0x2f')](_0x2690c5,0x1);}else{return;}});},'editClick':function(_0x1ce67f,_0x1eb5b4){app[_0x1014('0x2e')]();app[_0x1014('0x1')][_0x1014('0x26')]=_0x1eb5b4['department__c'];app[_0x1014('0x1')][_0x1014('0x35')]=_0x1eb5b4[_0x1014('0x19')];app[_0x1014('0x1')][_0x1014('0x39')]=_0x1eb5b4['address__c'];app[_0x1014('0x1')]['ac_number']=_0x1eb5b4[_0x1014('0x2d')];app[_0x1014('0xa')]=_0x1ce67f;console['log'](app[_0x1014('0xa')]);},'saveClick':function(){for(var _0x439eb1=0x0;_0x439eb1<app['list']['length'];_0x439eb1++){if(!app['list'][_0x439eb1]['Id']){app['addList'][_0x1014('0x30')](app[_0x1014('0x3d')][_0x439eb1]);}}this['$confirm'](_0x1014('0x20'),'提示',{'type':_0x1014('0x7')})['then'](({result})=>{if(result){Visualforce[_0x1014('0x3b')]['Manager'][_0x1014('0x2a')](_0x1014('0x1b'),app[_0x1014('0x16')],app[_0x1014('0x3c')],app[_0x1014('0x22')],function(_0x4e27de,_0x220cbf){if(_0x220cbf['status']){alert(_0x1014('0x1e'));location[_0x1014('0x37')]();}else{alert(_0x1014('0x41'));}},{'escape':![]});}else{return;}});}},'computed':{'count':function(){if(this[_0x1014('0x3d')][_0x1014('0xb')]>0x0){var _0x117e8d=0x0;for(var _0x502e1b=0x0;_0x502e1b<app['list'][_0x1014('0xb')];_0x502e1b++){_0x117e8d+=Number(app[_0x1014('0x3d')][_0x502e1b][_0x1014('0x2d')]);}return _0x117e8d;}else{return 0x0;}}}});
+
+</script>
+</html>
+</apex:page>

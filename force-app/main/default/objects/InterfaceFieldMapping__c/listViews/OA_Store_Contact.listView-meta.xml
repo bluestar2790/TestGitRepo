@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OA_Store_Contact</fullName>
+    <columns>NAME</columns>
+    <columns>IntfDefineName__c</columns>
+    <columns>InterfaceField__c</columns>
+    <columns>InterfaceFieldType__c</columns>
+    <columns>InterfaceObj__c</columns>
+    <columns>SfdcObj__c</columns>
+    <columns>SfdcField__c</columns>
+    <columns>SfdcFieldType__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>IntfDefineName__c</field>
+        <operation>equals</operation>
+        <value>OA_STORE_CONTRACT</value>
+    </filters>
+    <label>6 OA门店合同</label>
+</ListView>

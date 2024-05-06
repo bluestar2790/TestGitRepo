@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SalesTargetInfo</fullName>
+    <columns>NAME</columns>
+    <columns>InterfaceName__c</columns>
+    <columns>Results__c</columns>
+    <columns>GeneratedTime__c</columns>
+    <columns>SendContent__c</columns>
+    <columns>ReturnsContent__c</columns>
+    <columns>CREATEDBY_USER.ALIAS</columns>
+    <columns>IP__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>InterfaceName__c</field>
+        <operation>equals</operation>
+        <value>(U8)销售目标数据信息同步接口</value>
+    </filters>
+    <label>(U8)销售目标数据信息同步接口</label>
+</ListView>

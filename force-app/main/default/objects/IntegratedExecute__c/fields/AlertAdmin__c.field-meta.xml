@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AlertAdmin__c</fullName>
+    <defaultValue>false</defaultValue>
+    <externalId>false</externalId>
+    <label>重试达标已发邮件通知</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,269 @@
+<apex:page standardController="Product__c" 
+           showHeader="true"
+           extensions="CreateProductController"
+           sidebar="false">
+    <apex:includeScript value="{!URLFOR($Resource.jquery351min)}" />
+    <!--作为压缩文件包才需要第二个参数-->
+    <!--<apex:stylesheet value="{!URLFOR($Resource.JQuery, 'jquery-ui.min.css')}"/>-->
+    <script src='/soap/ajax/41.0/connection.js'></script>
+    <script src='/soap/ajax/41.0/apex.js'></script>
+
+
+<apex:sectionHeader title="Opportunity" subtitle="Exciting" help="" ></apex:sectionHeader>
+<apex:form id="theForm">
+
+    <apex:actionFunction action="{!saveAction}" name="saveAction" status="status" reRender="theForm">
+        <apex:param name="saveType" assignTo="{!saveType}" value=""/>
+    </apex:actionFunction>
+    <apex:pageMessages />
+    <apex:pageBlock title="操作按钮" id="theBlock" rendered="true">
+        <apex:pageBlockButtons location="top">
+            <apex:commandButton value="保存" id="saveButton" onclick="return submitToBack()" ></apex:commandButton>
+            <apex:commandButton value="取消" action="{!cancleAction}"></apex:commandButton>
+            <apex:commandButton action="{!prev}" value="上一页" />
+            <apex:commandButton action="{!next}" value="下一页" />
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection title="产品信息编辑" columns="2" id="theSection">
+            <apex:pageBlockSectionItem labelTitle="产品名称" id="nameItem">
+                <apex:outputLabel value="产品名称" for="name" ></apex:outputLabel>
+                <apex:inputText value="{!product1.Name}" id="name" onchange="checkProductName('{!$Component.theForm.theBlock.theSection.nameItem.name}')"></apex:inputText>
+            </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="unitItem">
+                <apex:outputLabel value="产品单位" for="unit"></apex:outputLabel>
+                <apex:inputField value="{!product1.ProductUnit__c}" id="unit"></apex:inputField>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem id="descriptionItem">
+                <apex:outputLabel value="产品描述" for="description"></apex:outputLabel>
+                <apex:outputPanel id="checkCode">
+                    <apex:inputField value="{!product1.ProductDescription__c}" id="description"></apex:inputField>
+                    <apex:actionSupport action="{!checkProductCodeUnique}"
+                                        event="onchange"
+                                        reRender="checkCode"
+                                        status="statusCode">                      
+                    </apex:actionSupport>
+                    <div style="color: green;margin-left: 5px">
+                        <apex:actionStatus id="statusCode" startText="代码检查中......." stopText="{!codeUniqueMessage}"></apex:actionStatus>
+                    </div>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem id="bigCategoryItem">
+                <apex:outputLabel value="产品大类" for="bigCategory"></apex:outputLabel>
+                <apex:inputField value="{!product1.ProductCategoriesFirst__c}" id="bigCategory"></apex:inputField> 
+            </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="basePriceItem">
+                <apex:outputLabel value="产品价格" for="basePrice"></apex:outputLabel>
+                <apex:inputField value="{!product1.ProductPrice__c}" id="basePrice"></apex:inputField> 
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem id="smallCategoryItem">
+                <apex:outputLabel value="产品小类" for="smallCategory"></apex:outputLabel>
+                <apex:inputField value="{!product1.ProductCategoriesSecond__c}" id="smallCategory"></apex:inputField>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem id="productInventoryMinItem">
+                <apex:outputLabel value="最小库存" for="productInventoryMin"></apex:outputLabel>
+                <apex:inputField value="{!product1.ProductInventoryMin__c}" id="productInventoryMin"></apex:inputField>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem id="productInventoryMaxItem">
+                <apex:outputLabel value="最大库存" for="productInventoryMax"></apex:outputLabel>
+                <apex:inputField value="{!product1.ProductInventoryMax__c}" id="productInventoryMax"></apex:inputField>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem id="currentInventoryItem">
+                <apex:outputLabel value="当前库存" for="currentInventory"></apex:outputLabel>
+                <apex:inputField value="{!product1.ProductInventory__c}" id="currentInventory"></apex:inputField>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem id="postingStatusItem">
+                <apex:outputLabel value="上架状态" for="postingStatus"></apex:outputLabel>
+                <apex:inputField value="{!product1.ProductStatus__c}" id="postingStatus"></apex:inputField>
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:form>
+<script>
+
+        //提交数据到后台保存
+        function submitToBack(){
+            saveAction();
+            return false;
+        }
+
+        sforce.connection.sessionId = '{!$Api.Session_ID}';
+
+        var nameId = "{!$Component.theForm.theBlock.theSection.nameItem.name}";
+        var price = "{!$Component.theForm.theBlock.theSection.basePriceItem.basePrice}";
+        var upperCategory = "{!$Component.theForm.theBlock.theSection.bigCategoryItem.bigCategory}";
+        var currentStock = "{!$Component.theForm.theBlock.theSection.nameItem.currentInventoryItem.currentInventory}";
+        var lowerCategory = "{!$Component.theForm.theBlock.theSection.nameItem.smallCategoryItem.smallCategory}";
+        // var productNo = "{!$Component.theForm.theBlock.theSection.nameItem.}";
+        var unit = "{!$Component.theForm.theBlock.theSection.nameItem.unitItem.unit}";
+        var maxStock = "{!$Component.theForm.theBlock.theSection.nameItem.productInventoryMaxItem.productInventoryMax}";
+        var minStock = "{!$Component.theForm.theBlock.theSection.nameItem.productInventoryMinItem.productInventoryMin}";
+
+        //remoteAction方式
+        //检查产品名字是否唯一
+        function checkProductName(sourceId){
+        console.log(sourceId);
+        var ctl = document.getElementById(sourceId);
+        //console.log(ctl);
+        var productName = $(ctl).val();
+        //console.log(productName);
+        Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.CreateProductController.checkProductNameUnique}',
+                productName,
+                function(result, event){
+                   // $(img).hide();
+                    if (event.status) {
+                        if (result) {
+                            alert('产品名称可用');
+                        } else {
+                            alert('产品名称重复');
+                        }
+                    } else {
+                        alert('产品名称可用');
+                    }
+                },{escape: true}
+            );}
+
+        $(document).ready(function() {
+            callbackGetProductInfoByName('产品一');
+           
+        });
+
+        var result = null;
+        function callbackGetProductInfoByName(proName) {
+            result = sforce.apex.execute("ProductController", "queryProduct", {proName});
+            // console.log(result);
+            // console.log(result[0].Name);
+            // console.log(result[0].ProductCategoriesFirst__c);
+            // console.log(result[0].ProductUnit__c);
+            var nameInfo = document.getElementById(nameId);
+            $(nameInfo).val(result[0].Name);
+
+            var priceInfo = document.getElementById(price);
+            $(priceInfo).val(result[0].ProductPrice__c);
+
+            var upperCategoryInfo = document.getElementById(upperCategory);
+            $(upperCategoryInfo).val(result[0].ProductCategoriesFirst__c);
+
+            var currentStockInfo = document.getElementById(currentStock);
+            $(currentStockInfo).val(result[0].ProductInventory__c);
+
+            var lowerCategoryInfo = document.getElementById(lowerCategory);
+            $(lowerCategoryInfo).val(result[0].ProductCategoriesSecond__c);
+
+            // var productNoInfo = document.getElementById(productNo);
+            // $(productNoInfo).val(result[0].ProductNo__c);
+
+            var unitInfo = document.getElementById(unit);
+            $(unitInfo).val(result[0].ProductUnit__c);
+
+            var maxStockInfo = document.getElementById(maxStock);
+            $(maxStockInfo).val(result[0].ProductInventoryMax__c);
+
+            var minStockInfo = document.getElementById(minStock);
+            $(minStockInfo).val(result[0].ProductInventoryMin__c);
+        }
+
+</script>
+</apex:page>
+
+<!-- <apex:page standardController="Product__c">
+<apex:sectionHeader title="One of Your Opportunities" subtitle="Exciting !" />
+    <apex:form id="addForm">
+        <apex:pageBlock>
+            <apex:pageMessages />
+            
+            <apex:pageBlockButtons>
+                <apex:commandButton value="Save" action="{!save}"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection>
+                <apex:pageBlockSectionItem>
+                    <apex:inputText />
+                    <apex:outputLabel />
+                </apex:pageBlockSectionItem>
+                <apex:inputField />
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+
+
+    </apex:form>
+</apex:page>
+ -->
+<!-- For this example to render properly, you must associate the Visualforce page 
+with a valid case record in the URL. 
+For example, if 001D000000IRt53 is the case ID, the resulting URL should be: 
+https://Salesforce_instance/apex/myPage?id=001D000000IRt53
+See the Visualforce Developer's Guide Quick Start Tutorial for more information. -->
+         
+
+<!-- <apex:page standardController="Product__c" recordSetVar="cases" tabstyle="case">
+    <apex:form id="changeStatusForm">
+        <apex:pageBlock >
+        <apex:pageMessages />
+        <apex:pageBlockButtons >
+            <apex:commandButton value="Save" action="{!save}"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockTable value="{!cases}" var="c">
+            <apex:column value="{!c.Name}"/>
+            <apex:column value="{!c.ProductPrice__c}"/>
+            <apex:column value="{!c.ProductInventory__c}"/>
+            <apex:column value="{!c.ProductStatus__c}"/>
+            <apex:column headerValue="Status">
+                <apex:inputField value="{!c.ProductStatus__c}"/>
+            </apex:column>
+        </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
+
+ -->
+<!-- <apex:page controller="CreateProductController">
+    <apex:form id="checkForm">
+        <apex:pageBlock title="产品信息" mode="edit" id="proBlock">
+                
+            <apex:pageBlockSection title="产品信息编辑" columns="2" id="proBlockSection">
+                <apex:inputText value="{!productName}" label="产品名称" />
+                <apex:actionSupport action="{!checkProductCodeUnique}" 
+                                            event="onchange"
+                                            reRender="checkForm"
+                                            status="statusCode">
+                </apex:actionSupport>
+                <apex:inputText value="{!productPrice}" label="产品价格" />
+                <apex:inputText value="{!productCategoriesFirst}" label="产品大类" />
+                <apex:inputText value="{!productCategoriesSecond}" label="产品小类" />
+                <apex:inputText value="{!productUnit}" label="单位" />
+                <apex:inputText value="{!productInventory}" label="产品库存" />
+                <apex:inputText value="{!productInventoryMax}" label="最大库存" />
+                <apex:inputText value="{!productInventoryMin}" label="最小库存" />
+                <apex:inputText value="{!productStatus}" label="是否上架" />
+                <apex:inputText value="{!productDescription}" label="产品描述" />
+                <apex:actionFunction action="{!saveAction}" name="saveAction" status="status" reRender="theForm">
+                    <apex:param name="saveType" assignTo="{!saveType}" value=""/>
+                </apex:actionFunction>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockButtons id="proBlockButtons">
+                <apex:commandButton action="{!refreshData}" value="查询"/>
+                <apex:commandButton action="{!last}" value="上一页" />
+                <apex:commandButton action="{!next}" value="下一页" />
+            </apex:pageBlockButtons>
+
+        </apex:pageBlock>
+    </apex:form>
+</apex:page> -->
+
+<!--  Page: -->
+<!-- <apex:page controller="CreateProductController">
+    <apex:form >
+        <apex:outputpanel id="counter">
+            <apex:outputText value="Click Me!: {!count}"/>
+            <apex:actionSupport event="onclick" 
+                                action="{!incrementCounter}" 
+                                rerender="counter" status="counterStatus"/>
+        </apex:outputpanel>
+        <apex:actionStatus id="counterStatus" 
+                           startText=" (incrementing...)" 
+                           stopText=" (done)"/>
+    </apex:form>
+</apex:page>
+ -->

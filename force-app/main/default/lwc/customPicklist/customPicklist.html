@@ -1,0 +1,37 @@
+<!-- multiSelectLookup.html -->
+<template>
+    <!-- 包含下拉列表和已选项的容器 -->
+    <div class="slds-m-around_medium">
+        <!-- 下拉列表组件 -->
+        <lightning-combobox name="multiSelectCombobox"
+                            label="Select Options"
+                            placeholder="Select Options"
+                            value={values}
+                            options={options}
+                            onfocus={handleFocus}
+                            onblur={handleBlur}
+                            onchange={handleChange}>
+        </lightning-combobox>
+        
+        <!-- 条件渲染，如果已选择项存在，则显示 -->
+        <div if:true={isMultiSelect}>
+            <!-- 循环已选择的选项，并为每个选项创建一个带有移除按钮的视觉小组件（pill） -->
+            <template for:each={selectedOptions} for:item="option">
+                <span class="slds-pill_container" key={option.value}>
+                    <span class="slds-pill">
+                        <span class="slds-pill__label">{option.label}</span>
+                        <button class="slds-button slds-button_icon slds-pill__remove"
+                                type="button"
+                                title="Remove"
+                                onclick={handleRemove}
+                                data-recordid={option.value}>
+                            <lightning-icon icon-name="utility:close"
+                                            size="small"
+                                            alternative-text="Remove"></lightning-icon>
+                        </button>
+                    </span>
+                </span>
+            </template>
+        </div>
+    </div>
+</template>

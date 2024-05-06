@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PlanExecutedLog__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <externalId>false</externalId>
+    <label>计划执行日志</label>
+    <referenceTo>IntegratedLog__c</referenceTo>
+    <relationshipLabel>集成计划调用</relationshipLabel>
+    <relationshipName>IntegratedExecuteFIntegratedLog</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

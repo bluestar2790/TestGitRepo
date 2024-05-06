@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="myteststyle.css">
+    <style>
+
+        p.special,p + span.special {
+            color: orange;
+            font-weight: bold;
+        }
+
+        p+span, p+span+label {
+            color: rgb(0, 255, 251);
+            font-weight: bold;
+        }
+
+        p span {
+            color: rgb(80, 14, 156);
+            font-weight: bold;
+        }
+
+        a, a:link {
+            color: pink;
+        }
+        
+        a:visited {
+            color: gray;
+        }
+
+        a:hover {
+            text-decoration: none;
+        }
+
+        h1 {
+            color: chartreuse;
+        }
+
+        .box {
+            border: 5px solid darkblue;
+            width: 20vw;
+            height: 20vh;
+            font-size: 10vh;
+        }
+
+        .box1 {
+            width: 200px;
+            height: 200px;
+            border: 1px solid;
+        }
+        
+        img {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .cover {
+            object-fit: cover;
+        }
+        
+        .contain {
+            object-fit: contain;
+        }
+        
+    </style>
+</head>
+<body>
+    <div>
+        <h1 class="myh1">
+            <a>h1 1</a>
+        </h1>
+        <h2>h2 1</h2>
+        <p>项目一</p>
+        <span class="special">xiangmu7</span>
+        <span class="special">xiangmu7</span>
+        <p>
+            <span>
+                项目四
+            </span>
+        </p>
+        <span>项目三</span>
+    </div>
+    <p>xiangmu8</p>
+    <span>xiangmu7</span>
+    <label>lable1</label>
+    <label>lable2</label>
+    <p>项目二</p>
+    <a href="#">项目五</a>
+    <span>项目六</span>
+    <div class="box">
+        A
+    </div>
+
+    <div class="wrapper">
+        <div class="box1"><img src="流程.jpg" alt="balloons" class="cover"></div>
+        <div class="box1"><img src="流程.jpg" alt="balloons" class="contain"></div>
+    </div>
+</body>
+</html>
